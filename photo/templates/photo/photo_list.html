@@ -1,0 +1,57 @@
+{% extends "base.html" %} 
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/photo_list.css' %}">
+
+    <section class="body_wrap">
+        <main class="photos">
+            {% for photo in object_list %}
+                <article class="photos_photo">
+                    <section class="user_info">
+                        <a href="{% url 'accounts:profile' photo.user.profile.slug %}">
+                        {% if photo.user.profile.profile_photo %}
+                        <img src="{{ photo.user.profile.profile_photo.url }}" alt="user_photo" class="user_img">
+                        {% else %}
+                        <img src="{% static 'images/person.png' %}" alt="user_photo" class="user_img">
+                        {% endif %}
+                        </a>
+                        <hgroup class="photo_info">
+                            <h3 class="user_nickname">{{ photo.user.profile.nickname }}</h3>
+                            <h4 class="place"></h4>
+                        </hgroup>
+                        <small class="info_more"><i class="fas fa-ellipsis-h"></i></small>
+                    </section>
+                    <img class="photo_img" src="{{photo.image.url}}" alt="photo">
+                    <div class="photo_pagination"><span class="page">●</span></div>
+                    <section class="comment_wrap">
+                        <div class="comment_icons">
+                            <div class="column">
+                                <i class="far fa-heart"></i>
+                                <i class="far fa-comment"></i>
+                                <i class="fas fa-location-arrow"></i>
+                            </div>
+                            <i class="far fa-bookmark"></i>
+                        </div>
+                        <div class="likes_wrap">
+                            <img src="{% static 'images/person.png' %}" alt="person_photo" class="likes_img"><h5 class="likes_count"><span class="user_nickname">h_house님 </span><span class="count">외 74명</span>이 좋아합니다</h5>
+                        </div>
+                        {% if photo.comment_set.count %}
+                        <a href="{% url 'photo:detail' photo.id %}" class="comment_count"><small>댓글 {{ photo.more_count }}개 더 보기</small></a>
+                        <h4 class="photo_content"><span class="user_nickname">{{ photo.user.profile.nickname }} </span>  {{ photo.content }}</h4>
+                        <div class="comment"0>
+                            <h5 class="comment_text"><span class="user_nickname">{{ photo.comment_set.last.user.profile.nickname }}  </span>  {{ photo.comment_set.last.text }}</h5>
+                            <i class="far fa-heart"></i>
+                        </div>
+                        {% endif %}
+                        <div class="comment_add">
+                        {{ form.as_p }}
+                        </div>
+                    </section>
+                </article>
+            {% endfor %}
+        </main>
+        <aside class="aside">
+
+        </aside>
+    </section>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %} 
+
+{% block content %}
+
+    <article>
+        <img src="{{photo.image.url}}">
+        <p>{{photo.content}}</p>
+        <small>{{photo.created_at}}</small>
+    </article>
+
+{% endblock %}

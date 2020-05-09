@@ -1,0 +1,12 @@
+{% extends "base.html" %} 
+
+{% block content %}
+
+<form action="{% url 'photo:create' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="" />
+    {{form.as_p}}
+    <button type="submit">업로드</button>
+</form>
+
+{% endblock %}

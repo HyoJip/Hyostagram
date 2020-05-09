@@ -1,0 +1,38 @@
+{% extends "base.html" %} 
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+
+<div class="profile_wrap">
+    <header class="profile">
+    {% if profile_user.profile.profile_photo %}
+        <img class="profile_photo" src="{{profile_user.profile.profile_photo.url}}">
+    {% else %}
+        <img class="profile_photo" src="{% static 'images/person.png' %}">
+    {% endif %}
+        <section class="profile_info">
+            <div class="profile_set">
+            {% if profile_user.profile.nickname %}
+                <h2 class="profile_nickname">{{profile_user.profile.nickname}}</h2>
+            {% endif %}
+
+            {% if user == profile_user %}
+                    <button onclick="location.href='{% url 'accounts:profile_update' %}'" class="profile_btn" type="button">프로필 편집</button>
+            {% endif %}
+            </div>
+            <div class="follow"><span class="post">게시물 {{ profile_user.photo_set.count }}</span><span class="follower">팔로워</span><span class="followee">팔로우</span></div>
+            <h3 class="user_name">
+            {% if profile_user.first_name is not None %}
+                {{profile_user.first_name}}{{profile_user.last_name}}
+            {% endif %}
+            </h3>
+        </section>
+    </header>
+    <nav class="profile_nav"><span class="upload">게시물</span><span class="taged">태그됨</span></nav>
+    <main class="photos">
+    {% for object in profile_user.photo_set.all %}
+        <img class="photo" src="{{object.filtered_image.url}}" alt="user_photo">
+    {% endfor %}
+    </main>        
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/ad755395c3.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <title>Instagram</title>
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav_wrap">
+            <a href="{% url 'photo:list' %}"><img src="{% static 'images/logo.png'%}" alt="logo"></a>
+            <div class="input_wrap">
+                <i class="fas fa-search"></i>
+                <input type="search" class="nav_input" placeholder="검색">
+            </div>
+            <div class="nav_icons">
+                <a href="{% url 'photo:list' %}"><i class="fas fa-home"></i></a>
+                <i class="fas fa-location-arrow"></i>
+                <i class="far fa-compass"></i>
+                <i class="far fa-heart"></i>
+                {% if user.profile.slug %}
+                <a href="{% url 'accounts:profile' user.profile.slug %}"><img src="{{user.profile.profile_photo.url}}" alt="user_profile_image"></a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    {% block content %}
+    {% endblock %}
+</body>
+</html>

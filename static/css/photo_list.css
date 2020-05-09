@@ -1,0 +1,132 @@
+.user_nickname {
+	font-weight: bold;
+}
+
+.body_wrap {
+	display: grid;
+	grid-template-columns: 600px 1fr;
+	min-width: 500px;
+	max-width: 1000px;
+	padding: 10px;
+	margin: 0px auto;
+	gap: 50px;
+}
+
+.body_wrap .photos {
+	display: grid;
+	/* grid-auto-rows: 800px; */
+	gap: 50px;
+	margin: 30px 0;
+}
+
+.photos .photos_photo {
+	border: 1px solid var(--border_color);
+	background-color: white;
+}
+
+.photos_photo .user_info {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 60px;
+	padding: 0 15px;
+}
+
+.user_info .user_img {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+}
+
+.user_info .info_more {
+	font-size: 0.7em;
+	color: rgba(0, 0, 0, 0.5);
+}
+
+.photos_photo .photo_info {
+	margin-left: 10px;
+	margin-right: auto;
+	font-size: 0.7em;
+}
+
+.photos_photo .photo_img {
+	width: 600px;
+	height: 600px;
+	object-fit: cover;
+}
+
+.photos_photo .comment_wrap {
+	padding: 15px;
+}
+
+.comment_wrap .comment_icons {
+	position: relative;
+	display: flex;
+	margin-top: -30px;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 1.5em;
+}
+
+.photo_pagination {
+	position: relative;
+	text-align: center;
+}
+
+.photo_pagination .page {
+	display: inline-block;
+	color: rgba(0, 0, 0, 0.5);
+	font-size: 0.3em;
+	align-self: flex-start;
+	margin-top: 8px;
+}
+
+.comment_icons i {
+	margin-right: 5px;
+}
+
+.photos_photo .likes_wrap {
+	display: flex;
+	align-items: center;
+	margin: 10px 0 5px 0;
+}
+
+.likes_wrap .likes_img {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	margin-right: 5px;
+}
+
+.likes_wrap .likes_count {
+	font-size: 0.8em;
+}
+
+.likes_count .count {
+	font-weight: 700;
+}
+
+.photo_content {
+	font-size: 0.8em;
+}
+
+.comment {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.8em;
+	margin: 4px 0;
+}
+
+.comment_add p {
+	border-top: 1px solid var(--border_color);
+	padding: 15px 0;
+	margin-top: 15px;
+}
+
+.comment_wrap .comment_count {
+	display: inline-block;
+	text-decoration: none;
+	color: rgba(0, 0, 0, 0.6);
+	font-size: 0.7em;
+	margin: 5px 0;
+}

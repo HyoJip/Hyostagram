@@ -1,0 +1,38 @@
+{% load static %}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <title>Instagram</title>
+    </head>
+    <body>
+    {% if user.is_active %}
+    <h2> Welcome, {{user.username}} </h2>
+    <a href="{% url 'accounts:logout' %}">로그아웃</a>
+
+    {% else %}
+    {% if form.errors %}
+    <p>ID나 비밀번호가 일치하지 않습니다.</p>
+    {% endif %}
+    <content class="content_wrap">
+        <h1 class="content_title">Instagram</h1>
+        <form method="post" class="login_form">
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+                {{ form.username.errors }}
+                {% render_field form.username class="login_id" placeholder="전화번호, 사용자 이름 또는 이메일" %}
+                
+                {{ form.password.errors }}
+                {% render_field form.password class="login_pw" placeholder="비밀번호" %}
+
+            <button type="submit" class="login_btn">로그인</button>
+        </form>
+    </content>
+
+    {% endif %}
+    </body>
+</html>
