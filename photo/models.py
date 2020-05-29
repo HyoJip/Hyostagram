@@ -18,10 +18,10 @@ class Photo(models.Model):
     class Meta:
         ordering = ['-created_at']
 
-    def delete(self, *args, **kwargs):
-        self.image.delete()
-        self.filtered_image.delete()
-        super().delete(*args, **kwargs)
+    # def delete(self, *args, **kwargs):
+    #     self.image.delete()
+    #     self.filtered_image.delete()
+    #     super().delete(*args, **kwargs)
 
     def get_absolute_url(self):
         return resolve_url("photo:detail", self.id)

@@ -39,7 +39,9 @@
 }
 
 .user_info .info_more {
+	position: relative;
 	font-size: 0.7em;
+	text-align: center;
 	color: rgba(0, 0, 0, 0.5);
 }
 
@@ -47,6 +49,41 @@
 	margin-left: 10px;
 	margin-right: auto;
 	font-size: 0.7em;
+}
+
+.info_more .fa-ellipsis-h {
+	cursor: pointer;
+}
+
+.info_more > li > ul {
+	position: absolute;
+	left: -30px;
+	width: max-content;
+	opacity: 0;
+	visibility: hidden;
+	border: 1px solid var(--border_color);
+	transition: all 0.15s ease-in;
+}
+
+.info_more > li:hover > ul {
+	opacity: 1;
+	visibility: visible;
+}
+
+.info_more > li > ul > li {
+	padding: 10px;
+	background-color: white;
+}
+
+.info_more a,
+.delete-instagram {
+	all: unset;
+}
+
+.info_more > li > ul > li:hover {
+	color: black;
+	font-weight: bold;
+	cursor: pointer;
 }
 
 .photos_photo .photo_img {
@@ -133,5 +170,10 @@
 
 .comment_form {
 	all: unset;
-	width: 30em;
+	color: #262626;
+	height: 20px;
+}
+
+.comment_form input[type="submit"] {
+	display: none;
 }

@@ -9,14 +9,13 @@
         <title>Instagram</title>
     </head>
     <body>
+    <!-- 로그인 상태 -->
     {% if user.is_active %}
     <h2> Welcome, {{user.username}} </h2>
     <a href="{% url 'accounts:logout' %}">로그아웃</a>
 
+    <!-- 로그아웃 상태 -->
     {% else %}
-    {% if form.errors %}
-    <p>ID나 비밀번호가 일치하지 않습니다.</p>
-    {% endif %}
     <content class="content_wrap">
         <h1 class="content_title">Instagram</h1>
         <form method="post" class="login_form">
@@ -31,6 +30,19 @@
 
             <button type="submit" class="login_btn">로그인</button>
         </form>
+        <!-- 로그인 실패 -->
+        {% if form.errors %}
+            <p class="error_message">잘못된 ID 또는 비밀번호입니다. 다시 확인하세요</p>
+        {% endif %}
+
+        <!-- next로 왔을 경우 -->
+        {% if next %}
+            {% if user.is_authenticated %}
+                <p class="error_message">이 페이지를 볼 권한이 없습니다.</p>
+            {% else %}
+                <p class="error_message">이 페이지를 보기 위해선 로그인 해주세요.</p>
+            {% endif %}
+        {% endif %}
     </content>
 
     {% endif %}

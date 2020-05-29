@@ -63,7 +63,6 @@ class PhotoUpdate(ValidAuthorRequiredMixin, UpdateView):
 
 
 class PhotoDelete(ValidAuthorRequiredMixin, DeleteView):
-    # TODO: 인증 및 처리
     model = Photo
     success_url = reverse_lazy('photo:list')
 

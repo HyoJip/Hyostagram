@@ -1,4 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap");
+:root {
+	--border_color: rgba(0, 0, 0, 0.15);
+	--gray: #fafafa;
+}
 
 body {
 	background-color: var(--gray);
@@ -49,4 +53,9 @@ body {
 	font-weight: bold;
 	padding: 4px 0;
 	margin: 10px auto;
+}
+
+.error_message {
+	font-size: 0.8em;
+	color: red;
 }

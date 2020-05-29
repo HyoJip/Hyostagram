@@ -1,7 +1,9 @@
 {% extends "base.html" %} 
 {% load static %}
-{% block content %}
+{% block css %}
 <link rel="stylesheet" href="{% static 'css/photo_list.css' %}">
+{% endblock %}
+{% block content %}
 
     <section class="body_wrap">
         <main class="photos">
@@ -19,7 +21,20 @@
                             <h3 class="user_nickname">{{ photo.user.profile.nickname }}</h3>
                             <h4 class="place"></h4>
                         </hgroup>
-                        <small class="info_more"><i class="fas fa-ellipsis-h"></i></small>
+                        <ul class="info_more">
+                            <li><i class="fas fa-ellipsis-h"></i>
+                                <ul>
+                                    <li><a href="{% url 'photo:update' photo.pk %}">수정하기</a></li>
+                                    <li>
+                                        <form action="{% url 'photo:delete' photo.pk %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="next" value="{{ request.path }}">
+                                            <input type="submit" onclick="return confirm('정말 삭제하시겠습니까?')" class="delete-instagram" value="삭제하기"></input>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </section>
                     <img class="photo_img" src="{{photo.image.url}}" alt="photo">
                     <div class="photo_pagination"><span class="page">●</span></div>
@@ -44,7 +59,11 @@
                         </div>
                         {% endif %}
                         <div class="comment_add">
-                        {{ form.as_p }}
+                            <form class="comment_form" action="#" method="post">
+                                {% csrf_token %}
+                                {{ form.as_p }}
+                                <input type="submit">
+                            </form>
                         </div>
                     </section>
                 </article>
