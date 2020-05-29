@@ -35,10 +35,10 @@
                         <div class="likes_wrap">
                             <img src="{% static 'images/person.png' %}" alt="person_photo" class="likes_img"><h5 class="likes_count"><span class="user_nickname">h_house님 </span><span class="count">외 74명</span>이 좋아합니다</h5>
                         </div>
+                        <h4 class="photo_content"><span class="user_nickname">{{ photo.user.profile.nickname }} </span>  {{ photo.content }}</h4>
                         {% if photo.comment_set.count %}
                         <a href="{% url 'photo:detail' photo.id %}" class="comment_count"><small>댓글 {{ photo.more_count }}개 더 보기</small></a>
-                        <h4 class="photo_content"><span class="user_nickname">{{ photo.user.profile.nickname }} </span>  {{ photo.content }}</h4>
-                        <div class="comment"0>
+                        <div class="comment">
                             <h5 class="comment_text"><span class="user_nickname">{{ photo.comment_set.last.user.profile.nickname }}  </span>  {{ photo.comment_set.last.text }}</h5>
                             <i class="far fa-heart"></i>
                         </div>
