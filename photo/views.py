@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views.generic.detail import DetailView
@@ -68,14 +69,15 @@ class PhotoDelete(ValidAuthorRequiredMixin, DeleteView):
 
 
 class CommentCreate(LoginRequiredMixin, CreateView):
-    model = Comment
+    form_class = CommentForm
 
     def form_valid(self, form):
         comment = form.save(commit=False)
 
         comment.user = self.request.user
 
-        comment.image = Photo.objects.get(pk=self.kwargs.get('photo_pk'))
+        comment.photo = get_object_or_404(
+            Photo, pk=self.kwargs.get('photo_pk'))
         comment.save()
         return HttpResponseRedirect(self.request.POST.get('next', '/'))
 

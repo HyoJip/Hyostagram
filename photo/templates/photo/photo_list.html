@@ -51,17 +51,13 @@
                             <img src="{% static 'images/person.png' %}" alt="person_photo" class="likes_img"><h5 class="likes_count"><span class="user_nickname">h_house님 </span><span class="count">외 74명</span>이 좋아합니다</h5>
                         </div>
                         <h4 class="photo_content"><span class="user_nickname">{{ photo.user.profile.nickname }} </span>  {{ photo.content }}</h4>
-                        {% if photo.comment_set.count %}
-                        <a href="{% url 'photo:detail' photo.id %}" class="comment_count"><small>댓글 {{ photo.more_count }}개 더 보기</small></a>
-                        <div class="comment">
-                            <h5 class="comment_text"><span class="user_nickname">{{ photo.comment_set.last.user.profile.nickname }}  </span>  {{ photo.comment_set.last.text }}</h5>
-                            <i class="far fa-heart"></i>
-                        </div>
-                        {% endif %}
+                        {% include 'comment/comment_container.html' with comments=photo.comment_set %}
+                        <small class="timezone">{{ photo.timedelta_string }}</small>
                         <div class="comment_add">
-                            <form class="comment_form" action="#" method="post">
+                            <form class="comment_form" action="{% url 'photo:comment_create' photo.pk %}" method="post">
                                 {% csrf_token %}
                                 {{ form.as_p }}
+                                <input type="hidden" name="next" value="{{ request.path }}">
                                 <input type="submit">
                             </form>
                         </div>
@@ -74,3 +70,16 @@
         </aside>
     </section>
 {% endblock %}
+
+{% block js %}
+    <script>
+        document.getElementsByTagName("textarea").addEventListener("keypress", (event) => {
+            if (event.which === 13) {
+                event.preventDefault();
+
+                if (event.target.value === '') return
+                event.target.closest("form").submit();
+            }
+        })
+    </script>
+{% endblock%}
