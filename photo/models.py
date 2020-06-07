@@ -10,7 +10,8 @@ from imagekit.processors import ResizeToFill
 
 class Photo(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE,
+                             related_name="photos")
     image = models.ImageField(upload_to="media/")
     filtered_image = ImageSpecField(source='image', processors=[
                                     ResizeToFill(293, 293)], format="JPEG", options={'quality': 60})
@@ -52,9 +53,11 @@ class Photo(models.Model):
 
 
 class Comment(models.Model):
-    photo = models.ForeignKey(Photo, on_delete=models.CASCADE)
+    photo = models.ForeignKey(
+        Photo, on_delete=models.CASCADE, related_name="comments")
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE,
+                             related_name="comments")
     text = models.TextField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

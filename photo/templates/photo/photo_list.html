@@ -51,7 +51,9 @@
                             <img src="{% static 'images/person.png' %}" alt="person_photo" class="likes_img"><h5 class="likes_count"><span class="user_nickname">h_house님 </span><span class="count">외 74명</span>이 좋아합니다</h5>
                         </div>
                         <h4 class="photo_content"><span class="user_nickname">{{ photo.user.profile.nickname }} </span>  {{ photo.content }}</h4>
-                        {% include 'comment/comment_container.html' with comments=photo.comment_set %}
+                                                                                            <!-- with: 단순히 문자열를 바꿈
+                                                                                                ex) "/detail/{{pk}}"->   "/detail/{{photo.id}}"  -->
+                        <div class="comment_box">{% include 'comment/comment_container.html' with comments=photo.comments pk=photo.id%}</div>
                         <small class="timezone">{{ photo.timedelta_string }}</small>
                         <div class="comment_add">
                             <form class="comment_form" action="{% url 'photo:comment_create' photo.pk %}" method="post">
@@ -73,13 +75,56 @@
 
 {% block js %}
     <script>
-        document.getElementsByTagName("textarea").addEventListener("keypress", (event) => {
-            if (event.which === 13) {
-                event.preventDefault();
+        const comment_inputs = document.querySelectorAll(".comment_input");
 
-                if (event.target.value === '') return
-                event.target.closest("form").submit();
+        for (input of comment_inputs) {
+            input.addEventListener("keypress", (event)=> {
+                if (event.keyCode === 13 || event.which === 13) {
+                    event.preventDefault();
+
+                    const text = event.target.value;
+                    event.target.value = "";
+
+                    if (text === "") return
+                    const url = event.target.closest("form").getAttribute("action");
+                    const request = new XMLHttpRequest();   //  Request 객체 생성
+                    const data = new FormData();        // Form 객체 생성
+
+                    data.append("text", text);      // Form text에 데이터 삽입
+                    // data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+
+                    request.open("POST", url, true);        // Request를 POST 메소드, url에 async로 설정
+                    request.setRequestHeader('X-CSRFToken', cookies['csrftoken']);      // POST에 {{ csrf_token }}
+                    // request.setRequestHeader('X-Requested-With','XMLHttpRequest');
+                    // request.setRequestHeader("Content-type", 'application/json; charset=UTF-8');    // Header 설정
+
+                    request.send(data);           // Send
+                    
+                    request.onload = () => {
+                        if (request.status === 200) {
+                            const result = request.responseText;
+                            event.target.closest(".comment_wrap").querySelector(".comment_box").innerHTML = result;
+                        } else {
+                            console.error(request.responseText);
+                        }
+                    }
+                }
+            })
+        }
+        function parse_cookies() {
+            const cookies = {};
+            if (document.cookie && document.cookie !== '') {
+                document.cookie.split(';').forEach(function (c) {
+                    const m = c.trim().match(/(\w+)=(.*)/);
+                    if(m !== undefined) {
+                        cookies[m[1]] = decodeURIComponent(m[2]);
+                    }
+                });
             }
-        })
+            return cookies;
+        }
+        const cookies = parse_cookies();
+
+                                   
     </script>
-{% endblock%}
+{% endblock %}

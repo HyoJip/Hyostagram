@@ -14,7 +14,7 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ["text"]
         widgets = {
-            "text": forms.TextInput(attrs={"class": "comment_form", "placeholder": "댓글 달기...", "rows": "1"})
+            "text": forms.TextInput(attrs={"class": "comment_input", "placeholder": "댓글 달기..."})
         }
         labels = {
             "text": _('')

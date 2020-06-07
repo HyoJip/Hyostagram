@@ -1,5 +1,5 @@
 {% if comments.count %}
-    <a href="{% url 'photo:detail' photo.id %}" class="comment_count"><small>댓글 {{ photo.more_count }}개 더 보기</small></a>
+    <a href="/detail/{{pk}}" class="comment_count"><small>댓글 {{ comments.count }}개 모두 보기</small></a>
     <div class="comment">
         <h5 class="comment_text"><span class="user_nickname">{{ comments.last.user.profile.nickname }}  </span>{{ comments.last.text }}</h5>
         <i class="far fa-heart"></i>

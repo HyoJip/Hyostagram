@@ -155,6 +155,7 @@
 	justify-content: space-between;
 	font-size: 0.8em;
 	margin: 4px 0;
+	word-break: break-all;
 }
 
 .comment_add p {
@@ -176,7 +177,7 @@
 	color: rgba(0, 0, 0, 0.5);
 }
 
-.comment_form {
+.comment_input {
 	all: unset;
 	color: #262626;
 	height: 20px;

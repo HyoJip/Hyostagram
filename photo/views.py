@@ -19,8 +19,9 @@ class PhotoList(LoginRequiredMixin, FormMixin, ListView):
     form_class = CommentForm
 
     def get_queryset(self, **kwargs):
-        queryset = super().get_queryset(**kwargs).annotate(more_count=Count('comment') -
-                                                           1).prefetch_related('comment_set__user').select_related('user').order_by('-created_at')
+        queryset = super().get_queryset(**kwargs).prefetch_related(
+            'comments__user').select_related('user').order_by('-created_at')
+        # .annotate(more_count=Count('comments') -1)
         return queryset
 
 
@@ -68,8 +69,24 @@ class PhotoDelete(ValidAuthorRequiredMixin, DeleteView):
     success_url = reverse_lazy('photo:list')
 
 
-class CommentCreate(LoginRequiredMixin, CreateView):
-    form_class = CommentForm
+# class CommentCreate(LoginRequiredMixin, CreateView):
+#     form_class = CommentForm
+
+#     def form_valid(self, form):
+#         comment = form.save(commit=False)
+
+#         comment.user = self.request.user
+
+#         comment.photo = get_object_or_404(
+#             Photo, pk=self.kwargs.get('photo_pk'))
+#         comment.save()
+#         return HttpResponseRedirect(self.request.POST.get('next', '/'))
+
+
+class CommentCreateAjaxView(LoginRequiredMixin, CreateView):
+    model = Comment
+    fields = ['text']
+    template_name = "comment/comment_container.html"
 
     def form_valid(self, form):
         comment = form.save(commit=False)
@@ -77,9 +94,17 @@ class CommentCreate(LoginRequiredMixin, CreateView):
         comment.user = self.request.user
 
         comment.photo = get_object_or_404(
-            Photo, pk=self.kwargs.get('photo_pk'))
+            Photo, pk=self.kwargs.get("pk"))
+
         comment.save()
-        return HttpResponseRedirect(self.request.POST.get('next', '/'))
+
+        context = {
+            "comments": Comment.objects.select_related("user").filter(photo=comment.photo).order_by("created_at"),
+            "pk": Photo.objects.filter(id=comment.photo.id)[0].id
+        }   # 템플릿에서 쓰려면 {{}}안에 key 써야함
+        # ex) "/detail/{{pk}}" --> "/detail/16"  즉, 중괄호 사라짐
+
+        return render(self.request, "comment/comment_container.html", context)
 
 
 class CommentDelete(ValidAuthorRequiredMixin, DeleteView):
