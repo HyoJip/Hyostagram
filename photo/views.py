@@ -15,7 +15,7 @@ from .mixins import ValidAuthorRequiredMixin
 
 class PhotoList(LoginRequiredMixin, FormMixin, ListView):
     model = Photo
-    paginate_by = 20
+    paginate_by = 1
     form_class = CommentForm
 
     def get_queryset(self, **kwargs):

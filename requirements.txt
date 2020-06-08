@@ -6,7 +6,7 @@ chardet==3.0.4
 colorama==0.4.3
 defusedxml==0.6.0
 Django==3.0.3
-django-allauth==0.41.0
+django-allapythouth==0.41.0
 django-appconf==1.0.3
 django-imagekit==4.0.2
 httpie==2.0.0
