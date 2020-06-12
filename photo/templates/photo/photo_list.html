@@ -63,9 +63,12 @@
                         </div>
                     </section>
                 </article>
-            {% endfor %}
-        </main>
-        <aside class="aside">
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <a class="next_page" href="?page={{ page_obj.next_page_number }}" style="display: none;">More</a>
+                {% endif %}
+            </main>
+            <aside class="aside">
 
         </aside>
     </section>
@@ -79,27 +82,34 @@
             document.addEventListener("scroll", ()=>{
                 if (window.pageYOffset + window.innerHeight + 150 >= document.body.offsetHeight && !isExecuted) {
                     isExecuted = true;
-                    const search_params = new URLSearchParams(window.location.search); // 현재 페이지의 GET인자를 가공
-                    const current_page = parseInt(search_params.get('page')) || 1;
-                    const next_page_url = '?page=' + (current_page + 1); // 다음 페이지를 요청하기 위한 URL 생성
+                    // const search_params = new URLSearchParams(window.location.search); // 현재 페이지의 GET인자를 가공
+                    const next_page_url= document.querySelector(".next_page").getAttribute("href");     // html에서 url받음
+                    document.querySelector(".next_page").parentNode.removeChild(document.querySelector(".next_page"));  // anchor 요소 제거
+                    // const current_page = parseInt(search_params.get('page')) || 1;
+                    // const next_page_url = '?page=' + (current_page + 1); // 다음 페이지를 요청하기 위한 URL 생성
+                    if (next_page_url) {
+                        fetch(next_page_url, {
+                            method: "GET",
+                        }).then(res => {
+                            if (res.status === 200) {
+                                res.text().then(text =>{
+                                    try {
+                                    const next_page_markup = text.match(/<a class="next_page" href="\?page=.+">More<\/a>/)[0]
+                                    document.querySelector(".photos").insertAdjacentHTML("beforeend", next_page_markup);
+                                    } finally {
+                                    text = text.replace(/(<.*>)([\n\s]*)/g, '$1').match(/<article class="photos_photo">.*<\/article>/g)[0];
+                                    document.querySelector(".photos").insertAdjacentHTML("beforeend", text);
+                                    // history.pushState({}, '', next_page_url)
+                                    }
+                                })
+                            }
+                        })
 
-                    fetch(next_page_url, {
-                        method: "GET",
-                    }).then(res => {
-                        if (res.status === 200) {
-                            res.text().then(text =>{
-                                text = text.replace(/(<.*>)([\n\s]*)/g, '$1').match(/<article class="photos_photo">.*<\/article>/g)[0];
-                                document.querySelector(".photos").insertAdjacentHTML("beforeend", text);
-                                history.pushState({}, '', next_page_url)
-                            })
-                        }
-                    })
-
-                    setTimeout(() => {
-                        isExecuted = false;
-                    }, 1000);
+                        setTimeout(() => {
+                            isExecuted = false;
+                        }, 600);
+                    }
                 } 
-
             })
         }
 
