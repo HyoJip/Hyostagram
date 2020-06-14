@@ -1,11 +1,72 @@
 {% extends "base.html" %} 
+{% load static %}
 
 {% block content %}
 
-    <article>
-        <img src="{{photo.image.url}}">
-        <p>{{photo.content}}</p>
-        <small>{{photo.created_at}}</small>
-    </article>
+<div class="wrap">
+    <div class="button_wrap">
+        <div class="button_box">
+            <button class="btn_exit" value="X" />
+        </div>
+    </div>
+    <div class="article_wrap">
+        <img src="{{photo.image.url}}" alt="" class="article_photo">
+        <div class="article_info">
+            <section class="user_info">
+                <a href="{% url 'accounts:profile' photo.user.profile.slug %}">
+                {% if photo.user.profile.profile_photo %}
+                <img src="{{ photo.user.profile.profile_photo.url }}" alt="user_photo" class="user_img">
+                {% else %}
+                <img src="{% static 'images/person.png' %}" alt="user_photo" class="user_img">
+                {% endif %}
+                </a>
+                <hgroup class="photo_info">
+                    <h3 class="user_nickname"><a href="{% url 'accounts:profile' photo.user.profile.slug %}">{{ photo.user.profile.nickname }}</a></h3>
+                    <h4 class="place"></h4>
+                </hgroup>
+                <ul class="info_more">
+                    <li><i class="fas fa-ellipsis-h"></i>
+                        <ul>
+                            <li><a href="{% url 'photo:update' photo.pk %}">수정하기</a></li>
+                            <li>
+                                <form action="{% url 'photo:delete' photo.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <input type="submit" onclick="return confirm('정말 삭제하시겠습니까?')" class="delete-instagram" value="삭제하기"></input>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+            <section class="photo_content_wrap">
+                <h4 class="photo_content">
+                    <span class="user_nickname">{{ photo.user.profile.nickname }} </span>  {{ photo.content }}
+                </h4>
+                <small class="photo_date">{{ photo.timedelta_string }}</small>
+            </section>
+            <section class="photo_comments">
+                {% for comment in photo.comments.all %}
+                <div class="comment_user_photo">
+                    <img src="{{ comment.user.profile.profile_photo.url }}" alt="" onclick="location.href=`{% url 'accounts:profile' comment.user.profile.slug %}`">
+                </div>
+                <div class="comment_box">
+                    <h5 class="comment_text"><span class="user_nickname">{{ comment.user.profile.nickname }}  </span>{{ comment.text }}</h5>
+                    <small class="comment_date">{{ comment.timedelta_string }}</small>
+                </div>
+                <div class="like_box">
+                    <i class="far fa-heart"></i>
+                </div>
+                {% endfor %}
+            </section>
+        </div>
+    </div>
+    <div class="page_arrow_wrap">
+        <div class="page_arrows">
+            <a href=""><i class="fas fa-chevron-left"></i></a>
+            <a href=""><i class="fas fa-chevron-right"></i></a>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

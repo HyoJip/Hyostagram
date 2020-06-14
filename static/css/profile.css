@@ -84,7 +84,11 @@
 }
 
 .profile_nav span i {
-		padding: 0 5px;
+	padding: 0 5px;
+}
+
+.profile_nav:hover {
+	cursor: pointer;
 }
 
 .profile_nav .actived {
@@ -100,3 +104,4 @@
 .photos .photo {
 	width: 100%;
 	object-fit: contain;
+}
