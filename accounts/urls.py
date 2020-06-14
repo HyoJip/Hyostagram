@@ -8,7 +8,8 @@ urlpatterns = [
 
     # auth_views
     path("login/", auth_views.LoginView.as_view(), name="login"),
-    path("logout/", auth_views.LogoutView.as_view(next_page='login'), name="logout"),
+    path("account_logout/",
+         auth_views.LogoutView.as_view(next_page='login'), name="logout"),
 
     # Accounts App views
     path("signup/", views.UserCreate.as_view(), name="signup"),

@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 from .models import Profile
 
+
 class CreateUserForm(UserCreationForm):
     email = forms.EmailField(required=True)
 
@@ -24,9 +25,10 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ["first_name", "last_name"]
 
+
 class ProfileForm(forms.ModelForm):
     profile_photo = forms.ImageField(required=False)
-    
+
     class Meta:
         model = Profile
         fields = ["nickname", "profile_photo"]

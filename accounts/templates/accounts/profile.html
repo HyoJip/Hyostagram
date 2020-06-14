@@ -1,7 +1,11 @@
 {% extends "base.html" %} 
 {% load static %}
-{% block content %}
+
+{% block css %}
 <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
 
 <div class="profile_wrap">
     <header class="profile">
@@ -16,8 +20,10 @@
                 <h2 class="profile_nickname">{{profile_user.profile.nickname}}</h2>
             {% endif %}
 
+            <!-- 본인 프로필 페이지면 편집 버튼 생성-->
             {% if user == profile_user %}
-                    <button onclick="location.href='{% url 'accounts:profile_update' %}'" class="profile_btn" type="button">프로필 편집</button>
+                    <!-- 버튼에 a태그 넣고 싶으면 js를 쓰면 간단하게 가능 -->
+                    <button onclick="location.href=`{% url 'accounts:profile_update' %}`" class="profile_btn" type="button">프로필 편집</button>
             {% endif %}
             </div>
             <div class="follow"><span class="post">게시물 {{ profile_user.photos.count }}</span><span class="follower">팔로워</span><span class="followee">팔로우</span></div>
@@ -28,11 +34,13 @@
             </h3>
         </section>
     </header>
-    <nav class="profile_nav"><span class="upload">게시물</span><span class="taged">태그됨</span></nav>
+    <nav class="profile_nav">
+        <span class="upload actived"><i class="fas fa-th"></i>게시물</span>
+        <span class="taged"><i class="fas fa-user-tag"></i>태그됨</span></nav>
     <main class="photos">
     {% for object in profile_user.photos.all %}
-        <img class="photo" src="{{object.filtered_image.url}}" alt="user_photo">
+        <a href="{% url 'photo:detail' object.id %}"><img class="photo" src="{{object.filtered_image.url}}" alt="user_photo"></a>
     {% endfor %}
-    </main>        
+    </main>
 </div>
 {% endblock %}

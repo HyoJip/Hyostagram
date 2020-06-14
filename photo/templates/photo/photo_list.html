@@ -18,7 +18,7 @@
                         {% endif %}
                         </a>
                         <hgroup class="photo_info">
-                            <h3 class="user_nickname">{{ photo.user.profile.nickname }}</h3>
+                            <h3 class="user_nickname"><a href="{% url 'accounts:profile' photo.user.profile.slug %}">{{ photo.user.profile.nickname }}</a></h3>
                             <h4 class="place"></h4>
                         </hgroup>
                         <ul class="info_more">
@@ -100,6 +100,8 @@
                                     text = text.replace(/(<.*>)([\n\s]*)/g, '$1').match(/<article class="photos_photo">.*<\/article>/g)[0];
                                     document.querySelector(".photos").insertAdjacentHTML("beforeend", text);
                                     // history.pushState({}, '', next_page_url)
+
+                                    comment_ajax(); //  AJAX로 렌더링된 input폼에 댓글 AJAX 적용
                                     }
                                 })
                             }

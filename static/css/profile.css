@@ -1,7 +1,7 @@
 .profile_wrap {
 	display: grid;
 	max-width: 1000px;
-	grid-template-rows: 250px 40px 1fr;
+	grid-template-rows: 250px 60px 1fr;
 	grid-auto-rows: 1fr;
 	margin: 0 auto;
 }
@@ -69,17 +69,26 @@
 	border-top: 1px solid var(--border_color);
 	font-size: 0.8em;
 	font-weight: bold;
+	line-height: 60px;
 }
 
 .profile_nav span {
 	display: inline-block;
-	padding: 10px 0;
 	margin: 0 20px;
+	color: rgba(0, 0, 0, 0.35);
 }
 
 .profile_nav span:active {
 	border-top: 1px solid black;
 	opacity: 0.5;
+}
+
+.profile_nav span i {
+		padding: 0 5px;
+}
+
+.profile_nav .actived {
+	color: black;
 }
 
 .profile_wrap .photos {

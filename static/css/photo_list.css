@@ -1,4 +1,6 @@
-.user_nickname {
+.user_nickname > a {
+	text-decoration: none;
+	color: inherit;
 	font-weight: bold;
 }
 

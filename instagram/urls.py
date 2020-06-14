@@ -8,9 +8,11 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('photo.urls')), # Photo App URL
+    path('', include('photo.urls')),  # Photo App URL
 
-    path('', include('django.contrib.auth.urls')), # Include Accounts Templates set
+    # Include Accounts Templates set
+    # path('', include('django.contrib.auth.urls')),    # django.auth를 이용했었지만 allauth를 설치함으로써 필요없어짐
+    path('', include('allauth.urls')),
     path('accounts/', include('accounts.urls')),
 ]
 
