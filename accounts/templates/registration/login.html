@@ -69,20 +69,28 @@
 
     {% endif %}
     <script>
-        const login_pw = document.querySelector(".login_pw");
-        const login_btn = document.querySelector(".login_btn");
-        login_pw.addEventListener("input", ()=> {
-            // 비밀번호 input 4글자 이상일 때 버튼 활성화
-            if (login_pw.value.length >= 4) {
-                if (!login_btn.classList.contains("actived")) {
-                    login_btn.classList.add("actived");
+        const make_activate_login_btn = () => {
+            const login_pw = document.querySelector(".login_pw");
+            const login_btn_classList = document.querySelector(".login_btn").classList;
+            login_pw.addEventListener("input", ()=> {
+                // 비밀번호 input 4글자 이상일 때 버튼 활성화
+                if (login_pw.value.length >= 4) {
+                    if (!login_btn_classList.contains("actived")) {
+                        login_btn_classList.add("actived");
+                    }
+                } else {
+                    if (login_btn_classList.contains("actived")) {
+                        login_btn_classList.remove("actived");
+                    }
                 }
-            } else {
-                if (login_btn.classList.contains("actived")) {
-                    login_btn.classList.remove("actived");
-                }
-            }
-        })
+            })
+        }
+
+        const init = () => {
+            make_activate_signup_btn();
+        }
+
+        init();
     </script>
     </body>
 </html>
