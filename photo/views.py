@@ -54,7 +54,7 @@ class PhotoUpdate(ValidAuthorRequiredMixin, UpdateView):
     model = Photo
     form_class = PhotoForm
 
-    def form_invalid(self):
+    def form_valid(self):
         instance = form.save()
         Photo.objects.filter(photo=instance).delete()
         if self.request.FILES:
