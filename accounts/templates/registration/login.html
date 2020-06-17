@@ -1,3 +1,5 @@
+{% extends "base2.html" %}
+
 {% load static %}
 <!-- css 설정 편의를 위한 라이브러리 -->
 {% load widget_tweaks %}    
@@ -6,16 +8,11 @@
 <!-- 소셜에서 제공하는 템플릿을 그대로 쓰기 위해 -->
 {% providers_media_js %}
 
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://kit.fontawesome.com/ad755395c3.js" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="{% static 'css/style.css' %}">
-        <title>Instagram</title>
-    </head>
-    <body>
+{% block css%}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block content %}
     <!-- 로그인 상태 -->
     {% if user.is_active %}
     <h2> Welcome, {{user.username}} </h2>
@@ -68,29 +65,32 @@
     </content>
 
     {% endif %}
-    <script>
-        const make_activate_login_btn = () => {
-            const login_pw = document.querySelector(".login_pw");
-            const login_btn_classList = document.querySelector(".login_btn").classList;
-            login_pw.addEventListener("input", ()=> {
-                // 비밀번호 input 4글자 이상일 때 버튼 활성화
-                if (login_pw.value.length >= 4) {
-                    if (!login_btn_classList.contains("actived")) {
-                        login_btn_classList.add("actived");
-                    }
-                } else {
-                    if (login_btn_classList.contains("actived")) {
-                        login_btn_classList.remove("actived");
-                    }
+
+{% endblock %}
+
+{% block js%}
+<script>
+    const make_activate_login_btn = () => {
+        const login_pw = document.querySelector(".login_pw");
+        const login_btn_classList = document.querySelector(".login_btn").classList;
+        login_pw.addEventListener("input", ()=> {
+            // 비밀번호 input 4글자 이상일 때 버튼 활성화
+            if (login_pw.value.length >= 4) {
+                if (!login_btn_classList.contains("actived")) {
+                    login_btn_classList.add("actived");
                 }
-            })
-        }
+            } else {
+                if (login_btn_classList.contains("actived")) {
+                    login_btn_classList.remove("actived");
+                }
+            }
+        })
+    }
 
-        const init = () => {
-            make_activate_signup_btn();
-        }
+    const init = () => {
+        make_activate_signup_btn();
+    }
 
-        init();
-    </script>
-    </body>
-</html>
+    init();
+</script>
+{% endblock %}
