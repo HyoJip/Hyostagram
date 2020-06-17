@@ -44,6 +44,7 @@ body {
 }
 
 .signup_username,
+.signup_nickname,
 .signup_pw,
 .signup_email {
 	all: unset;

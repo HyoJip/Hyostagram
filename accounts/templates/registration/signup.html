@@ -31,19 +31,19 @@
         <div class="line"></div>
     </div>
 
-    <form method="post" class="signup_form">
+    <form method="post" class="signup_form" enctype="multipart/form-data">
         {% csrf_token %}
-        {% render_field form.email class="signup_email" placeholder="이메일 주소" %}
-        <!-- username input을 렌더링 -->
-        {% render_field form.username class="signup_username" placeholder="성명" %}
-        <!-- password input을 렌더링 -->
-        {% render_field form.password1 class="signup_pw" id="signup_pw1" placeholder="비밀번호" %}
-        {% render_field form.password2 class="signup_pw" id="signup_pw2" placeholder="비밀번호 확인" %}
+        {% render_field user_form.email class="signup_email" placeholder="이메일 주소" %}
+        <!-- profile.nickname 렌더링 -->
+        {% render_field profile_form.nickname class="signup_nickname" placeholder="닉네임" %}
+        <!-- username input 렌더링 -->
+        {% render_field user_form.username class="signup_username" placeholder="아이디" %}
+        <!-- password input 렌더링 -->
+        {% render_field user_form.password1 class="signup_pw" id="signup_pw1" placeholder="비밀번호" %}
+        {% render_field user_form.password2 class="signup_pw" id="signup_pw2" placeholder="비밀번호 확인" %}
 
-        {% if redirect_field_value %}
-        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-        {% endif %}
 
+        
         <button type="submit" class="signup_btn">가입</button>
     </form>
 

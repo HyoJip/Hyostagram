@@ -14,11 +14,7 @@
         <div class="article_info">
             <section class="user_info">
                 <a href="{% url 'accounts:profile' photo.user.profile.slug %}">
-                {% if photo.user.profile.profile_photo %}
                 <img src="{{ photo.user.profile.profile_photo.url }}" alt="user_photo" class="user_img">
-                {% else %}
-                <img src="{% static 'images/person.png' %}" alt="user_photo" class="user_img">
-                {% endif %}
                 </a>
                 <hgroup class="photo_info">
                     <h3 class="user_nickname"><a href="{% url 'accounts:profile' photo.user.profile.slug %}">{{ photo.user.profile.nickname }}</a></h3>

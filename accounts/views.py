@@ -13,6 +13,31 @@ class UserCreate(CreateView):
     form_class = CreateUserForm
     success_url = reverse_lazy('accounts:create_user_done')
 
+    def form_valid(self, form):
+        ctx = self.get_context_data()
+        profile_form = ctx["profile_form"]
+
+        if profile_form.is_valid() and form.is_valid():
+            profile = profile_form.save(commit=False)
+            user = form.save(commit=False)
+            profile.user = user
+
+            form.save()
+            profile_form.save()
+
+            return redirect(self.success_url)
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        if self.request.POST:
+            ctx['user_form'] = CreateUserForm(self.request.POST)
+            ctx['profile_form'] = ProfileForm(self.request.POST)
+        else:
+            ctx['user_form'] = CreateUserForm()
+            ctx['profile_form'] = ProfileForm()
+
+        return ctx
+
 
 class UserRegistered(TemplateView):
     template_name = "registration/signup_done.html"
