@@ -1,0 +1,107 @@
+body {
+	display: flex;
+	justify-content: center;
+}
+
+.wrapper {
+	display: flex;
+	width: 1000px;
+	margin-top: 30px;
+}
+
+.wrapper .wrapper_left,
+.wrapper .wrapper_right {
+	border: 1px solid var(--border_color);
+	background-color: white;
+}
+
+.wrapper_left ul li {
+	padding: 16px 16px 16px 30px;
+	width: 188px;
+}
+
+.wrapper_left ul .actived {
+	font-weight: bold;
+	border-left: 2px solid black;
+}
+
+.wrapper .wrapper_right {
+	padding: 20px 100px 20px 20px;
+	flex-basis: 75%;
+}
+
+.wrapper_right .user_info {
+	display: flex;
+	margin-top: 35px;
+	height: 42px;
+}
+
+aside {
+	flex-basis: 25%;
+	text-align: right;
+	padding: 0 20px;
+}
+
+.user_info article {
+	flex-basis: 75%;
+}
+
+.user_info img {
+	height: 42px;
+}
+
+.user_info .username {
+	font-size: 1.3em;
+	line-height: 1.2em;
+}
+
+.user_info .change_profile-photo {
+	all: unset;
+	font-weight: bold;
+	color: #0095f6;
+	cursor: pointer;
+}
+
+input {
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	height: 25px;
+	width: 100%;
+}
+
+.input-data {
+	display: flex;
+	text-align: right;
+	margin: 15px 0;
+}
+
+.input-data label {
+	flex-basis: 25%;
+	padding: 0 20px;
+	font-weight: bold;
+}
+
+.input-data input {
+	flex-basis: 75%;
+}
+
+form p {
+	color: gray;
+	font-size: 0.8em;
+	width: calc(75% - 40px);
+	display: flex;
+	margin-left: auto;
+}
+
+input[type="file"] {
+	display: none;
+}
+
+input[type="submit"] {
+	all: unset;
+	background-color: #0095f6;
+	padding: 0.6em 0.8em;
+	opacity: 0.5;
+	border-radius: 5px;
+	font-weight: bold;
+	color: white;
+}
