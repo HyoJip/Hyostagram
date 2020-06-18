@@ -1,23 +1,50 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/profile_update.css' %}">
+{% endblock %}
+
 {% block content %}
 
-<h1> "{{user.username}}" Profile Update</h1>
+<div class="wrapper">
+    <menu class="wrapper_left">
+        <ul>
+            <li class="actived">프로필 편집</li>
+        </ul>
+    </menu>
 
-    {% if error %}
-    <div role="alert">
-    <button type="button" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-    <strong>Error</strong> {{error}}
-    </div>
-    {% endif %}
+    <main class="wrapper_right">
+        <header class="user_info">
+            <aside><img src="{{ user.profile.profile_photo.url }}" alt="profile_photo"></aside>
+            <article><h1 class="username">{{user.username}}</h1><button role="link" class="change_profile-photo" value="프로필 사진 바꾸기">프로필 사진 바꾸기</button></article>
+        </header>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% render_field profile_form.profile_photo class="profile_photo" %}
+            <ul>
+                <li class="input-data"><label for="name">성</label>{% render_field user_form.first_name class="name" %}</li>
+                <li class="input-data"><label for="name">이름</label>{% render_field user_form.last_name class="name" %}</li>
+                <p>사람들이 이름, 별명 또는 비즈니스 이름 등 회원님의 알려진 이름을 사용하여 회원님의 계정을 찾을 수 있도록 도와주세요</p>
+                <li class="input-data"><label for="name">사용자 이름</label>{% render_field profile_form.nickname class="nickname" %}</li>
+                <li class="input-data"><label for="email"">이메일</label>{% render_field user_form.email class="email" %}</li>
+                <li class="input-data"><label for="submit"></label><input type="submit" value="제출" /></li>
+            </ul>
+        </form>
+    </main>
+</div>
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ user_form.as_p }}
-        {{ profile_form.as_p }}
-        <input type="submit" value="Update" />
-    </form>
-</p>
+{% endblock %}
 
+{% block js %}
+<script>
+    const linkToProfilePhotoChanger = ()=> {
+        document.querySelector(".change_profile-photo").addEventListener("click", () => {
+        document.querySelector("#id_profile_photo").click();
+        })
+    }
+
+    linkToProfilePhotoChanger();
+</script>
 {% endblock %}

@@ -23,11 +23,12 @@ class CreateUserForm(UserCreationForm):
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ["first_name", "last_name"]
+        fields = ["first_name", "last_name", "email"]
 
 
 class ProfileForm(forms.ModelForm):
-    profile_photo = forms.ImageField(required=False)
+    profile_photo = forms.ImageField(
+        required=False, widget=forms.widgets.FileInput)
 
     class Meta:
         model = Profile
