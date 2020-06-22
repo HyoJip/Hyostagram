@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 class PhotoForm(forms.ModelForm):
     class Meta:
         model = Photo
-        exclude = ["user", "filtered_image"]
+        exclude = ["user", "filtered_image", 'like']
 
 
 class CommentForm(forms.ModelForm):

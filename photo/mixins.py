@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from django.conf import settings
 from django.contrib.auth.mixins import AccessMixin
 from django.core.exceptions import PermissionDenied
 from django.db import models
@@ -48,3 +49,15 @@ class TimeStampedMixin(models.Model):
             # settings.py에 변경한 로컬 시간대를 기준으로 UTC 시간을 변환하여 리턴한다.
 
             return "{:%Y년 %m월 %d일}".format(timezone.localtime(self.created_at, timezone.get_current_timezone()))
+
+
+class LikeMixin(models.Model):
+    like = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name='%(class)s_likes', blank=True)
+
+    class Meta:
+        abstract = True
+
+    @property
+    def total_likes(self):
+        return self.like.count()  # likes 컬럼의 값의 갯수를 센다

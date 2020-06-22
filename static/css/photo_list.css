@@ -109,6 +109,15 @@
 	font-size: 1.5em;
 }
 
+.comment_icons i {
+	cursor: pointer;
+	z-index: 0;
+}
+
+.fa-heart.fas {
+	color: red;
+}
+
 .photo_pagination {
 	position: relative;
 	text-align: center;

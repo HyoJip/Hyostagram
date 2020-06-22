@@ -1,16 +1,20 @@
+import json
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
+from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import (CreateView, DeleteView, FormMixin,
                                        UpdateView)
 from django.views.generic.list import ListView
 
 from .forms import CommentForm, PhotoForm
-from .models import Comment, Photo
 from .mixins import ValidAuthorRequiredMixin
+from .models import Comment, Photo
 
 
 class PhotoList(LoginRequiredMixin, FormMixin, ListView):
@@ -20,9 +24,15 @@ class PhotoList(LoginRequiredMixin, FormMixin, ListView):
 
     def get_queryset(self, **kwargs):
         queryset = super().get_queryset(**kwargs).prefetch_related(
-            'comments__user').select_related('user').order_by('-created_at')
+            'comments__user').select_related('user').prefetch_related('like').order_by('-created_at')
         # .annotate(more_count=Count('comments') -1)
         return queryset
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        context['current_user'] = self.request.user
+        return context
 
 
 class PhotoDetail(DetailView):
@@ -67,7 +77,6 @@ class PhotoUpdate(ValidAuthorRequiredMixin, UpdateView):
 class PhotoDelete(ValidAuthorRequiredMixin, DeleteView):
     model = Photo
     success_url = reverse_lazy('photo:list')
-
 
 # class CommentCreate(LoginRequiredMixin, CreateView):
 #     form_class = CommentForm
@@ -122,3 +131,24 @@ class CommentUpdate(ValidAuthorRequiredMixin, UpdateView):
 
     def get_success_url(self):
         return Comment.objects.get(pk=self.kwargs['pk']).get_absolute_url()
+
+
+@require_POST
+def photo_like(request):
+    user = request.user  # 로그인한 유저를 가져온다.
+    pk = request.POST.get('pk')
+    is_created = True
+    photo = get_object_or_404(Photo, pk=pk)  # 해당 오브젝트를 가져온다.
+
+    if photo.like.filter(id=user.id).exists():  # 이미 해당 유저가 likes컬럼에 존재하면
+        photo.like.remove(user)  # likes 컬럼에서 해당 유저를 지운다.
+        is_created = False
+    else:
+        photo.like.add(user)
+        is_created = True
+
+    context = {'like_count': photo.total_likes,
+               'nickname': request.user.profile.nickname,
+               'is_created': is_created}
+
+    return HttpResponse(json.dumps(context), content_type="application/json")

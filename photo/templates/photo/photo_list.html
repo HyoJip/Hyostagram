@@ -37,18 +37,23 @@
                     <section class="comment_wrap">
                         <div class="comment_icons">
                             <div class="column">
-                                <i class="far fa-heart"></i>
+                                <i class="
+                                {% if current_user in photo.like.all %}fas{% else %}far{% endif %} fa-heart"
+                                 id="like_btn" data-id="{{photo.id}}"></i>
                                 <i class="far fa-comment"></i>
-                                <i class="fas fa-location-arrow"></i>
                             </div>
-                            <i class="far fa-bookmark"></i>
+                          <i class="far fa-bookmark"></i>
                         </div>
                         <div class="likes_wrap">
-                            <img src="{% static 'images/person.png' %}" alt="person_photo" class="likes_img"><h5 class="likes_count"><span class="user_nickname">h_house님 </span><span class="count">외 74명</span>이 좋아합니다</h5>
+                            <img src="{% static 'images/person.png' %}" alt="person_photo" class="likes_img">
+                            <h5 class="likes_count">
+                                {% if photo.total_likes %}<span class="user_nickname">{{photo.like.last.profile.nickname}} </span>
+                                <span class="count">외 {% endif %}<span class="total_likes">{{ photo.total_likes }}</span>명</span>이 좋아합니다
+                            </h5>
                         </div>
                         <h4 class="photo_content"><span class="user_nickname">{{ photo.user.profile.nickname }} </span>  {{ photo.content }}</h4>
                         <div class="comment_box">{% include 'comment/comment_container.html' with comments=photo.comments pk=photo.id%}</div>
-                        <small class="timezone">{{ photo.timedelta_string }}</small>
+                        <small class="timezone">{{ photo.timedelta_string }}</small>  
                         <div class="comment_add">
                             <form class="comment_form" action="{% url 'photo:comment_create' photo.pk %}" method="post">
                                 {% csrf_token %}
@@ -72,10 +77,23 @@
 
 {% block js %}
     <script>
-        function page_ajax() {
+        const parse_cookies = ()=> {
+            const cookies = {};
+            if (document.cookie && document.cookie !== '') {
+                document.cookie.split(';').forEach(function (c) {
+                    const m = c.trim().match(/(\w+)=(.*)/);
+                    if(m !== undefined) {
+                        cookies[m[1]] = decodeURIComponent(m[2]);
+                    }
+                });
+            }
+            return cookies;
+        }
+
+        const page_ajax = () => {
             let isExecuted = false;
             
-            document.addEventListener("scroll", ()=>{
+            document.addEventListener("scroll", () => {
                 if (window.pageYOffset + window.innerHeight + 150 >= document.body.offsetHeight && !isExecuted) {
                     isExecuted = true;
                     // const search_params = new URLSearchParams(window.location.search); // 현재 페이지의 GET인자를 가공
@@ -87,32 +105,38 @@
                         fetch(next_page_url, {
                             method: "GET",
                         }).then(res => {
-                            if (res.status === 200) {
-                                res.text().then(text =>{
-                                    try {
-                                    const next_page_markup = text.match(/<a class="next_page" href="\?page=.+">More<\/a>/)[0]
-                                    document.querySelector(".photos").insertAdjacentHTML("beforeend", next_page_markup);
-                                    } finally {
-                                    text = text.replace(/(<.*>)([\n\s]*)/g, '$1').match(/<article class="photos_photo">.*<\/article>/g)[0];
-                                    document.querySelector(".photos").insertAdjacentHTML("beforeend", text);
-                                    // history.pushState({}, '', next_page_url)
-
-                                    comment_ajax(); //  AJAX로 렌더링된 input폼에 댓글 AJAX 적용
+                            if (res.status === 200) res.text().then(text =>{
+                                try {insert_next_page_input(text);}
+                                finally {
+                                        // history.pushState({}, '', next_page_url)
+                                        render_next_page(text);
+                                        comment_ajax(); //  AJAX로 렌더링된 input폼에 댓글 AJAX 적용
+                                        like_ajax();
                                     }
                                 })
-                            }
                         })
 
                         setTimeout(() => {
                             isExecuted = false;
                         }, 600);
                     }
-                } 
+                }
+                const insert_next_page_input = (text) => {
+                    const next_page_markup = text.match(/<a class="next_page" href="\?page=.+">More<\/a>/)[0]
+                    document.querySelector(".photos").insertAdjacentHTML("beforeend", next_page_markup);
+                }
+
+                const render_next_page = (text) => {
+                    text = text.replace(/\n|\s{3,}/g, '').match(/<article class="photos_photo">.*<\/article>/g)[0];
+                    document.querySelector(".photos").insertAdjacentHTML("beforeend", text);
+                }
             })
         }
 
-        function comment_ajax () {
-            const comment_inputs = document.querySelectorAll(".comment_input");
+        const comment_ajax = ()=> {
+
+            let comment_inputs = [...document.querySelectorAll(".comment_input")]
+            comment_inputs = comment_inputs.length % 2 === 0 ? comment_inputs.slice(-2): comment_inputs.slice(-1);
             const cookies = parse_cookies();
 
             for (input of comment_inputs) {
@@ -125,11 +149,9 @@
 
                         if (text === "") return
                         const url = event.target.closest("form").getAttribute("action");
-                        // const request = new XMLHttpRequest();   //  Request 객체 생성
                         const data = new FormData();        // Form 객체 생성
 
                         data.append("text", text);      // Form text에 데이터 삽입
-                        // data.append("csrfmiddlewaretoken", "{{ csrf_token }}");
 
                         fetch(url, {
                             method: "POST",
@@ -137,7 +159,7 @@
                             headers: {'X-CSRFToken': cookies['csrftoken']}
                         }).then(res => {
                             if (res.status === 200) {
-                                res.text().then(text=> {
+                                res.json().then(text=> {
                                     event.target.closest(".comment_wrap").querySelector(".comment_box").innerHTML = text;
                                 }).catch(err => console.log(err))
                             }
@@ -163,25 +185,60 @@
             }
         }
 
-        function parse_cookies() {
-            const cookies = {};
-            if (document.cookie && document.cookie !== '') {
-                document.cookie.split(';').forEach(function (c) {
-                    const m = c.trim().match(/(\w+)=(.*)/);
-                    if(m !== undefined) {
-                        cookies[m[1]] = decodeURIComponent(m[2]);
-                    }
-                });
+        ///////////// Like
+
+        const like_ajax = () => {
+            const handleClickLikeBtn = (event) => {
+                const pk = event.target.dataset.id;
+                const url = "{% url 'photo:photo_like' %}";
+                const headers =  { "Content-Type": "application/x-www-form-urlencoded",
+                                    "X-CSRFToken": cookies["csrftoken"],
+                                    "X-Requested-With": "XMLHttpRequest"};
+                
+                fetch(url, {
+                    method: "POST",
+                    body:  "pk=" + pk,
+                    headers, }).then(res => {
+                    if (res.status === 200) {
+                        res.json().then(data => {
+                            if (data.like_count === 1 && data.is_created)
+                                event.target.closest(".comment_wrap").querySelector(".total_likes").textContent = data.nickname+" 1";
+                            else
+                                event.target.closest(".comment_wrap").querySelector(".total_likes").textContent = data.like_count;
+
+                            toggleLikeBtn(data.is_created);
+                            })
+                        }
+                    });
+                
+                const toggleLikeBtn = (is_created) => {
+                    const target_CL = event.target.classList;
+                    if (is_created) {
+                        target_CL.remove("far")
+                        target_CL.add("fas")
+                    } else {
+                        target_CL.remove("fas")
+                        target_CL.add("far")
+                    }    
+                }
             }
-            return cookies;
+
+            const cookies = parse_cookies();
+            let like_btns = [...document.querySelectorAll("#like_btn")];
+            like_btns = like_btns.length % 2 === 0 ? like_btns.slice(-2) : like_btns.split(-1);
+
+            for (like_btn of like_btns) {
+                like_btn.addEventListener("click", handleClickLikeBtn)
+            }
+
         }
 
-        function init () {
+        const init = () => {
             comment_ajax();
             page_ajax();
+            like_ajax();
         }
 
         init();
     </script>
 {% endblock %}
-

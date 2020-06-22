@@ -4,10 +4,10 @@ from django.shortcuts import resolve_url
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 
-from .mixins import TimeStampedMixin
+from .mixins import TimeStampedMixin, LikeMixin
 
 
-class Photo(TimeStampedMixin):
+class Photo(TimeStampedMixin, LikeMixin):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE,
                              related_name="photos")
@@ -15,7 +15,6 @@ class Photo(TimeStampedMixin):
     filtered_image = ImageSpecField(source='image', processors=[
                                     ResizeToFill(293, 293)], format="JPEG", options={'quality': 60})
     content = models.TextField(max_length=500, blank=True)
-    like = models.IntegerField(default=0)
 
     class Meta:
         ordering = ['-created_at']
@@ -29,14 +28,13 @@ class Photo(TimeStampedMixin):
         return resolve_url("photo:detail", self.id)
 
 
-class Comment(TimeStampedMixin):
+class Comment(TimeStampedMixin, LikeMixin):
     photo = models.ForeignKey(
         Photo, on_delete=models.CASCADE, related_name="comments")
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE,
                              related_name="comments")
     text = models.TextField(max_length=500)
-    like = models.IntegerField(default=0)
 
     def get_absolute_url(self):
         if self.photo:
