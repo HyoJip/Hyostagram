@@ -40,7 +40,7 @@
                                 <i class="
                                 {% if current_user in photo.like.all %}fas{% else %}far{% endif %} fa-heart"
                                  id="like_btn" data-id="{{photo.id}}"></i>
-                                <i class="far fa-comment"></i>
+                                <i class="far fa-comment" onclick="focusToCommentForm(event)"></i>
                             </div>
                           <i class="far fa-bookmark"></i>
                         </div>
@@ -159,7 +159,7 @@
                             headers: {'X-CSRFToken': cookies['csrftoken']}
                         }).then(res => {
                             if (res.status === 200) {
-                                res.json().then(text=> {
+                                res.text().then(text=> {
                                     event.target.closest(".comment_wrap").querySelector(".comment_box").innerHTML = text;
                                 }).catch(err => console.log(err))
                             }
@@ -225,13 +225,18 @@
 
             const cookies = parse_cookies();
             let like_btns = [...document.querySelectorAll("#like_btn")];
-            like_btns = like_btns.length % 2 === 0 ? like_btns.slice(-2) : like_btns.split(-1);
+            like_btns = like_btns.length % 2 === 0 ? like_btns.slice(-2) : like_btns.slice(-1);
 
             for (like_btn of like_btns) {
                 like_btn.addEventListener("click", handleClickLikeBtn)
             }
 
         }
+
+        function focusToCommentForm(event){
+            event.target.closest(".comment_wrap").querySelector(".comment_input").focus();
+        }
+
 
         const init = () => {
             comment_ajax();
