@@ -39,7 +39,7 @@
                             <div class="column">
                                 <i class="
                                 {% if current_user in photo.like.all %}fas{% else %}far{% endif %} fa-heart"
-                                 id="like_btn" data-id="{{photo.id}}"></i>
+                                 id="like_btn" data-id="{{photo.id}}" onclick="photoLikeAjax(event)"></i>
                                 <i class="far fa-comment" onclick="focusToCommentForm(event)"></i>
                             </div>
                           <i class="far fa-bookmark"></i>
@@ -52,7 +52,11 @@
                             </h5>
                         </div>
                         <h4 class="photo_content"><span class="user_nickname">{{ photo.user.profile.nickname }} </span>  {{ photo.content }}</h4>
-                        <div class="comment_box">{% include 'comment/comment_container.html' with comments=photo.comments pk=photo.id%}</div>
+                        {% if current_user in photo.comments.last.like.all %}
+                        <div class="comment_box">{% include 'comment/comment_container.html' with comments=photo.comments pk=photo.id likeClass="fas" %}</div>
+                        {% else %}
+                        <div class="comment_box">{% include 'comment/comment_container.html' with comments=photo.comments pk=photo.id likeClass="far" %}</div>
+                        {% endif %}
                         <small class="timezone">{{ photo.timedelta_string }}</small>  
                         <div class="comment_add">
                             <form class="comment_form" action="{% url 'photo:comment_create' photo.pk %}" method="post">
@@ -77,7 +81,11 @@
 
 {% block js %}
     <script>
-        const parse_cookies = ()=> {
+        const focusToCommentForm = (event) => {
+            event.target.closest(".comment_wrap").querySelector(".comment_input").focus();
+        }
+
+        const parseCookies = ()=> {
             const cookies = {};
             if (document.cookie && document.cookie !== '') {
                 document.cookie.split(';').forEach(function (c) {
@@ -90,7 +98,7 @@
             return cookies;
         }
 
-        const page_ajax = () => {
+        const pageAjax = () => {
             let isExecuted = false;
             
             document.addEventListener("scroll", () => {
@@ -106,12 +114,12 @@
                             method: "GET",
                         }).then(res => {
                             if (res.status === 200) res.text().then(text =>{
-                                try {insert_next_page_input(text);}
+                                try {insertNextPageInput(text);}
                                 finally {
                                         // history.pushState({}, '', next_page_url)
-                                        render_next_page(text);
-                                        comment_ajax(); //  AJAX로 렌더링된 input폼에 댓글 AJAX 적용
-                                        like_ajax();
+                                        renderNextPage(text);
+                                        commentAjax(); //  AJAX로 렌더링된 input폼에 댓글 AJAX 적용
+                                        photoLikeAjax();
                                     }
                                 })
                         })
@@ -121,25 +129,25 @@
                         }, 600);
                     }
                 }
-                const insert_next_page_input = (text) => {
+                const insertNextPageInput = (text) => {
                     const next_page_markup = text.match(/<a class="next_page" href="\?page=.+">More<\/a>/)[0]
                     document.querySelector(".photos").insertAdjacentHTML("beforeend", next_page_markup);
                 }
 
-                const render_next_page = (text) => {
+                const renderNextPage = (text) => {
                     text = text.replace(/\n|\s{3,}/g, '').match(/<article class="photos_photo">.*<\/article>/g)[0];
                     document.querySelector(".photos").insertAdjacentHTML("beforeend", text);
                 }
             })
         }
 
-        const comment_ajax = ()=> {
+        const commentAjax = ()=> {
 
-            let comment_inputs = [...document.querySelectorAll(".comment_input")]
-            comment_inputs = comment_inputs.length % 2 === 0 ? comment_inputs.slice(-2): comment_inputs.slice(-1);
-            const cookies = parse_cookies();
+            let commentInputs = [...document.querySelectorAll(".comment_input")]
+            commentInputs = commentInputs.length % 2 === 0 ? commentInputs.slice(-2): commentInputs.slice(-1);
+            const cookies = parseCookies();
 
-            for (input of comment_inputs) {
+            for (input of commentInputs) {
                 input.addEventListener("keypress", (event)=> {
                     if (event.keyCode === 13 || event.which === 13) {
                         event.preventDefault();
@@ -187,61 +195,74 @@
 
         ///////////// Like
 
-        const like_ajax = () => {
-            const handleClickLikeBtn = (event) => {
-                const pk = event.target.dataset.id;
-                const url = "{% url 'photo:photo_like' %}";
+        const toggleLikeBtn = (isCreated, event) => {
+            const target_CL = event.target.classList;
+            if (isCreated) {
+                target_CL.remove("far")
+                target_CL.add("fas")
+            } else {
+                target_CL.remove("fas")
+                target_CL.add("far")
+            }    
+        }
+        
+        const photoLikeAjax = (event) => {
+            const cookies = parseCookies();
+            const pk = event.target.dataset.id;
+            const url = "{% url 'photo:photo_like' %}";
+            const headers =  { "Content-Type": "application/x-www-form-urlencoded",
+                                "X-CSRFToken": cookies["csrftoken"],
+                                "X-Requested-With": "XMLHttpRequest"};
+            
+            fetch(url, {
+                method: "POST",
+                body:  "pk=" + pk,
+                headers, }).then(res => {
+                if (res.status === 200) {
+                    res.json().then(data => {
+                        if (data.like_count === 1 && data.is_created)
+                            event.target.closest(".comment_wrap").querySelector(".total_likes").textContent = data.nickname+" 1";
+                        else
+                            event.target.closest(".comment_wrap").querySelector(".total_likes").textContent = data.like_count;
+
+                        toggleLikeBtn(data.is_created, event);
+                    })
+                }
+            });
+        }
+
+            // let like_btns = [...document.querySelectorAll("#like_btn")];
+            // like_btns = like_btns.length % 2 === 0 ? like_btns.slice(-2) : like_btns.slice(-1);
+
+            // for (like_btn of like_btns) {
+            //     like_btn.addEventListener("click", handleClickPhotoLikeBtn)
+            // }
+
+
+        const commentLikeAjax = (event) => {
+            const cookies = parseCookies();
+            const pk = event.target.dataset.id;
+                const url = "{% url 'photo:comment_like' %}";
                 const headers =  { "Content-Type": "application/x-www-form-urlencoded",
                                     "X-CSRFToken": cookies["csrftoken"],
                                     "X-Requested-With": "XMLHttpRequest"};
-                
-                fetch(url, {
-                    method: "POST",
-                    body:  "pk=" + pk,
-                    headers, }).then(res => {
-                    if (res.status === 200) {
-                        res.json().then(data => {
-                            if (data.like_count === 1 && data.is_created)
-                                event.target.closest(".comment_wrap").querySelector(".total_likes").textContent = data.nickname+" 1";
-                            else
-                                event.target.closest(".comment_wrap").querySelector(".total_likes").textContent = data.like_count;
 
-                            toggleLikeBtn(data.is_created);
-                            })
-                        }
-                    });
-                
-                const toggleLikeBtn = (is_created) => {
-                    const target_CL = event.target.classList;
-                    if (is_created) {
-                        target_CL.remove("far")
-                        target_CL.add("fas")
-                    } else {
-                        target_CL.remove("fas")
-                        target_CL.add("far")
-                    }    
+            fetch(url, {
+                method: "POST",
+                body:  "pk=" + pk,
+                headers, }).then(res => {
+                if (res.status === 200) {
+                    res.json().then(data => {
+                        toggleLikeBtn(data.is_created, event);
+                    })
                 }
-            }
-
-            const cookies = parse_cookies();
-            let like_btns = [...document.querySelectorAll("#like_btn")];
-            like_btns = like_btns.length % 2 === 0 ? like_btns.slice(-2) : like_btns.slice(-1);
-
-            for (like_btn of like_btns) {
-                like_btn.addEventListener("click", handleClickLikeBtn)
-            }
-
+            });
         }
-
-        function focusToCommentForm(event){
-            event.target.closest(".comment_wrap").querySelector(".comment_input").focus();
-        }
-
 
         const init = () => {
-            comment_ajax();
-            page_ajax();
-            like_ajax();
+            commentAjax();
+            pageAjax();
+            photoLikeAjax();
         }
 
         init();

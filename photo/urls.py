@@ -25,4 +25,5 @@ urlpatterns = [
 
     # LikeAjax
     path("like/", views.photo_like, name="photo_like"),
+    path("like/comment", views.comment_like, name="comment_like"),
 ]

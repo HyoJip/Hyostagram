@@ -126,7 +126,6 @@ class CommentDelete(ValidAuthorRequiredMixin, DeleteView):
 
 class CommentUpdate(ValidAuthorRequiredMixin, UpdateView):
     model = Comment
-    # TODO: 템플릿 작성
     fields = ['text']
 
     def get_success_url(self):
@@ -150,5 +149,24 @@ def photo_like(request):
     context = {'like_count': photo.total_likes,
                'nickname': request.user.profile.nickname,
                'is_created': is_created}
+
+    return HttpResponse(json.dumps(context), content_type="application/json")
+
+
+@require_POST
+def comment_like(request):
+    user = request.user  # 로그인한 유저를 가져온다.
+    pk = request.POST.get('pk')
+    is_created = True
+    comment = get_object_or_404(Comment, pk=pk)  # 해당 오브젝트를 가져온다.
+
+    if comment.like.filter(id=user.id).exists():  # 이미 해당 유저가 likes컬럼에 존재하면
+        comment.like.remove(user)  # likes 컬럼에서 해당 유저를 지운다.
+        is_created = False
+    else:
+        comment.like.add(user)
+        is_created = True
+
+    context = {'is_created': is_created, }
 
     return HttpResponse(json.dumps(context), content_type="application/json")

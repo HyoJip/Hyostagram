@@ -112,6 +112,7 @@
 .comment_icons i {
 	cursor: pointer;
 	z-index: 0;
+	margin-right: 5px;
 }
 
 .fa-heart.fas {
@@ -129,10 +130,6 @@
 	font-size: 0.3em;
 	align-self: flex-start;
 	margin-top: 8px;
-}
-
-.comment_icons i {
-	margin-right: 5px;
 }
 
 .photos_photo .likes_wrap {
@@ -197,4 +194,8 @@
 
 .comment_form input[type="submit"] {
 	display: none;
+}
+
+.comment_box i {
+	cursor: pointer;
 }
