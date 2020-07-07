@@ -1,68 +1,149 @@
 {% extends "base.html" %} 
 {% load static %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/photo_detail.css' %}">
+{% endblock %}
 
 {% block content %}
 
-<div class="wrap">
-    <div class="button_wrap">
-        <div class="button_box">
-            <button class="btn_exit" value="X" />
-        </div>
-    </div>
-    <div class="article_wrap">
-        <img src="{{photo.image.url}}" alt="" class="article_photo">
-        <div class="article_info">
-            <section class="user_info">
-                <a href="{% url 'accounts:profile' photo.user.profile.slug %}">
+<div class="article_wrap">
+    <img src="{{photo.image.url}}" alt="{{photo.content}}" class="article_photo">
+    <div class="article_info">
+        <section class="user_info">
+            <a href="{% url 'accounts:profile' photo.user.profile.slug %}">
                 <img src="{{ photo.user.profile.profile_photo.url }}" alt="user_photo" class="user_img">
-                </a>
-                <hgroup class="photo_info">
-                    <h3 class="user_nickname"><a href="{% url 'accounts:profile' photo.user.profile.slug %}">{{ photo.user.profile.nickname }}</a></h3>
-                    <h4 class="place"></h4>
-                </hgroup>
-                <ul class="info_more">
-                    <li><i class="fas fa-ellipsis-h"></i>
-                        <ul>
-                            <li><a href="{% url 'photo:update' photo.pk %}">수정하기</a></li>
-                            <li>
-                                <form action="{% url 'photo:delete' photo.pk %}" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="next" value="{{ request.path }}">
-                                    <input type="submit" onclick="return confirm('정말 삭제하시겠습니까?')" class="delete-instagram" value="삭제하기"></input>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </section>
-            <section class="photo_content_wrap">
-                <h4 class="photo_content">
-                    <span class="user_nickname">{{ photo.user.profile.nickname }} </span>  {{ photo.content }}
-                </h4>
-                <small class="photo_date">{{ photo.timedelta_string }}</small>
-            </section>
-            <section class="photo_comments">
-                {% for comment in photo.comments.all %}
+                <span class="user_nickname">{{ photo.user.profile.nickname }}</span>
+            </a>
+            <ul class="info_more">
+                <li><i class="fas fa-ellipsis-h"></i>
+                    <ul>
+                        <li><a href="{% url 'photo:update' photo.pk %}">수정하기</a></li>
+                        <li>
+                            <form action="{% url 'photo:delete' photo.pk %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.path }}">
+                                <input type="submit" onclick="return confirm('정말 삭제하시겠습니까?')" class="delete-instagram" value="삭제하기"></input>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+        <section class="photo_comments">
+            <h4 class="photo_content">
+                <img src="{{ photo.user.profile.profile_photo.url }}" alt="user_photo" class="user_img"><span class="user_nickname">{{ photo.user.profile.nickname }} </span>  {{ photo.content }}
+            </h4>
+            {% for comment in photo.comments.all %}
+            <div class="comment_item">
                 <div class="comment_user_photo">
-                    <img src="{{ comment.user.profile.profile_photo.url }}" alt="" onclick="location.href=`{% url 'accounts:profile' comment.user.profile.slug %}`">
+                    <img src="{{ comment.user.profile.profile_photo.url }}" class="user_img" alt="{{comment.user.profile.nickname}}" onclick="location.href=`{% url 'accounts:profile' comment.user.profile.slug %}`">
                 </div>
                 <div class="comment_box">
-                    <h5 class="comment_text"><span class="user_nickname">{{ comment.user.profile.nickname }}  </span>{{ comment.text }}</h5>
+                    <h5 class="comment_text"><span class="user_nickname">{{ comment.user.profile.nickname }}</span>{{ comment.text }}</h5>
                     <small class="comment_date">{{ comment.timedelta_string }}</small>
                 </div>
                 <div class="like_box">
-                    <i class="far fa-heart"></i>
+                    <i class="{% if current_user in comment.like.all %}fas{% else %}far{% endif %} fa-heart" data-id="{{comment.id}}" onclick="commentLikeAjax(event)"></i>
                 </div>
-                {% endfor %}
-            </section>
-        </div>
-    </div>
-    <div class="page_arrow_wrap">
-        <div class="page_arrows">
-            <a href=""><i class="fas fa-chevron-left"></i></a>
-            <a href=""><i class="fas fa-chevron-right"></i></a>
+            </div>
+            {% endfor %}
+        </section>
+        <div class="section_footer">
+            <div class="comment_icons">
+                <div class="column">
+                    <i class="
+                    {% if current_user in photo.like.all %}fas{% else %}far{% endif %} fa-heart"
+                     id="like_btn" data-id="{{photo.id}}" onclick="photoLikeAjax(event)"></i>
+                    <i class="far fa-comment" onclick="focusToCommentForm(event)"></i>
+                </div>
+            </div>
+            <h4 class="comment_count">좋아요 <span class="total_likes">{{photo.total_likes}}</span>개</h4>
+            <small class="timezone">{{ photo.timedelta_string }}</small>
+            <div class="comment_add">
+                <form class="comment_form" action="{% url 'photo:comment_create' photo.pk %}" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <input type="submit">
+                </form>
+            </div>
         </div>
     </div>
 </div>
-
 {% endblock %}
+
+{% block js %}
+<script>
+    const parseCookies = ()=> {
+        const cookies = {};
+        if (document.cookie && document.cookie !== '') {
+            document.cookie.split(';').forEach(function (c) {
+                const m = c.trim().match(/(\w+)=(.*)/);
+                if(m !== undefined) {
+                    cookies[m[1]] = decodeURIComponent(m[2]);
+                }
+            });
+        }
+        return cookies;
+    }
+
+    const focusToCommentForm = (event) => {
+        event.target.closest(".section_footer").querySelector(".comment_input").focus();
+    }
+
+    const toggleLikeBtn = (isCreated, event) => {
+            const target_CL = event.target.classList;
+            if (isCreated) {
+                target_CL.remove("far")
+                target_CL.add("fas")
+            } else {
+                target_CL.remove("fas")
+                target_CL.add("far")
+            }    
+        }
+    
+    const commentLikeAjax = (event) => {
+            const cookies = parseCookies();
+            const pk = event.target.dataset.id;
+                const url = "{% url 'photo:comment_like' %}";
+                const headers =  { "Content-Type": "application/x-www-form-urlencoded",
+                                    "X-CSRFToken": cookies["csrftoken"],
+                                    "X-Requested-With": "XMLHttpRequest"};
+
+            fetch(url, {
+                method: "POST",
+                body:  "pk=" + pk,
+                headers, }).then(res => {
+                if (res.status === 200) {
+                    res.json().then(data => {
+                        toggleLikeBtn(data.is_created, event);
+                    })
+                }
+            });
+        }
+
+    const photoLikeAjax = (event) => {
+        const cookies = parseCookies();
+        const pk = event.target.dataset.id;
+        const url = "{% url 'photo:photo_like' %}";
+        const headers =  { "Content-Type": "application/x-www-form-urlencoded",
+                            "X-CSRFToken": cookies["csrftoken"],
+                            "X-Requested-With": "XMLHttpRequest"};
+        
+        fetch(url, {
+            method: "POST",
+            body:  "pk=" + pk,
+            headers, }).then(res => {
+            if (res.status === 200) {
+                res.json().then(data => {
+                    event.target.closest(".section_footer").querySelector(".total_likes").textContent = data.like_count;
+                    toggleLikeBtn(data.is_created, event);
+                })
+            }
+        });
+    }
+
+    
+</script>
+{% endblock %}
+

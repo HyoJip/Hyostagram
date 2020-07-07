@@ -199,3 +199,8 @@
 .comment_box i {
 	cursor: pointer;
 }
+
+.photo_content .user_nickname,
+.comment_text .user_nickname {
+	font-weight: bold;
+}

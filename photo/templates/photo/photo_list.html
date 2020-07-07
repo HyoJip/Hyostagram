@@ -59,7 +59,7 @@
                         {% endif %}
                         <small class="timezone">{{ photo.timedelta_string }}</small>  
                         <div class="comment_add">
-                            <form class="comment_form" action="{% url 'photo:comment_create' photo.pk %}" method="post">
+                            <form class="comment_form" action="{% url 'photo:comment_create_ajax' photo.pk %}" method="post">
                                 {% csrf_token %}
                                 {{ form.as_p }}
                                 <input type="hidden" name="next" value="{{ request.path }}">
@@ -262,7 +262,6 @@
         const init = () => {
             commentAjax();
             pageAjax();
-            photoLikeAjax();
         }
 
         init();

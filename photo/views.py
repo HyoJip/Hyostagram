@@ -35,8 +35,14 @@ class PhotoList(LoginRequiredMixin, FormMixin, ListView):
         return context
 
 
-class PhotoDetail(DetailView):
+class PhotoDetail(DetailView, FormMixin):
     model = Photo
+    form_class = CommentForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_user'] = self.request.user
+        return context
 
 
 class PhotoCreate(LoginRequiredMixin, CreateView):
@@ -64,32 +70,24 @@ class PhotoUpdate(ValidAuthorRequiredMixin, UpdateView):
     model = Photo
     form_class = PhotoForm
 
-    def form_valid(self):
-        instance = form.save()
-        Photo.objects.filter(photo=instance).delete()
-        if self.request.FILES:
-            photo = self.request.FILES.get("image")
-            Photo(photo=instance, image=photo)
-            photo.save()
-        return super().form_valid(form)
-
 
 class PhotoDelete(ValidAuthorRequiredMixin, DeleteView):
     model = Photo
     success_url = reverse_lazy('photo:list')
 
-# class CommentCreate(LoginRequiredMixin, CreateView):
-#     form_class = CommentForm
 
-#     def form_valid(self, form):
-#         comment = form.save(commit=False)
+class CommentCreate(LoginRequiredMixin, CreateView):
+    form_class = CommentForm
 
-#         comment.user = self.request.user
+    def form_valid(self, form):
+        comment = form.save(commit=False)
 
-#         comment.photo = get_object_or_404(
-#             Photo, pk=self.kwargs.get('photo_pk'))
-#         comment.save()
-#         return HttpResponseRedirect(self.request.POST.get('next', '/'))
+        comment.user = self.request.user
+
+        comment.photo = get_object_or_404(
+            Photo, pk=self.kwargs.get('photo_pk'))
+        comment.save()
+        return HttpResponseRedirect(self.request.POST.get('next', '/'))
 
 
 class CommentCreateAjaxView(LoginRequiredMixin, CreateView):

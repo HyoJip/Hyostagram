@@ -14,10 +14,10 @@ urlpatterns = [
 
 
     # Comment
-    #     path("comment/create/<int:photo_pk>/",
-    #          views.CommentCreate.as_view(), name="comment_create"),
-    path("comment/create/<int:pk>/",
-         views.CommentCreateAjaxView.as_view(), name="comment_create"),
+    path("comment/create/<int:photo_pk>/",
+         views.CommentCreate.as_view(), name="comment_create"),
+    path("comment/create/ajax/<int:pk>/",
+         views.CommentCreateAjaxView.as_view(), name="comment_create_ajax"),
     path("comment/update/<int:pk>/",
          views.CommentUpdate.as_view(), name="comment_update"),
     path("comment/delete/<int:pk>/",
