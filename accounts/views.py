@@ -1,11 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, CreateView, DetailView
+from django.views.generic import TemplateView, CreateView, DetailView, ListView
 from django.contrib.auth.models import User
 from django.views import View
 
 from .forms import CreateUserForm, UserForm, ProfileForm
 from .models import Profile
+from photo.models import Photo
 
 
 class UserCreate(CreateView):
@@ -100,3 +101,18 @@ class ProfileUpdateView(View):
             profile.save()
 
         return redirect("accounts:profile", slug=request.user.profile.slug)
+
+
+class UserLikePhoto(ListView):
+    # model = Photo
+    template_name = "accounts/photos_user_liked.html"
+
+    def get_queryset(self, **kwargs):
+        queryset = Photo.objects.filter(like__id=self.request.user.id)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile_user'] = User.objects.get(id=self.request.user.id)
+        print(context['profile_user'])
+        return context

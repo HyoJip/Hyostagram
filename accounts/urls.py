@@ -19,4 +19,6 @@ urlpatterns = [
     path("profile/<slug:slug>/", views.ProfileView.as_view(), name="profile"),
     path("profile/update", views.ProfileUpdateView.as_view(), name="profile_update"),
 
+    path("profile/<slug:slug>/photo_like",
+         views.UserLikePhoto.as_view(), name="user_like_photo"),
 ]
