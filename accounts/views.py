@@ -1,8 +1,9 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, DetailView, ListView
 from django.contrib.auth.models import User
 from django.views import View
+from django.contrib import messages
 
 from .forms import CreateUserForm, UserForm, ProfileForm
 from .models import Profile
@@ -62,7 +63,8 @@ class ProfileUpdateView(View):
         user = get_object_or_404(User, pk=request.user.pk)
         user_form = UserForm(initial={
             "first_name": user.first_name,
-            "last_name": user.last_name
+            "last_name": user.last_name,
+            "email": user.email
         })
 
         if hasattr(user, "profile"):
@@ -78,29 +80,35 @@ class ProfileUpdateView(View):
         return render(request, "accounts/profile_update.html", {"user_form": user_form, "profile_form": profile_form})
 
     def post(self, request):
-        current_user = User.objects.get(pk=request.user.pk)
-        user_form = UserForm(request.POST, instance=current_user)
+        try:
+            current_user = User.objects.get(pk=request.user.pk)
+            user_form = UserForm(request.POST, instance=current_user)
 
-        if user_form.is_valid():
-            user_form.save()
+            # PROFILE UPDATE
+            if hasattr(current_user, "profile"):    
+                profile = current_user.profile
+                profile_form = ProfileForm(
+                    request.POST, request.FILES, instance=profile)
 
-        # PROFILE UPDATE
-        if hasattr(current_user, "profile"):
-            profile = current_user.profile
-            profile_form = ProfileForm(
-                request.POST, request.FILES, instance=profile)
+            # PROFILE CREATE
+            else:
+                profile_form = ProfileForm(request.POST, request.FILES)
 
-        # PROFILE CREATE
-        else:
-            profile_form = ProfileForm(request.POST, request.FILES)
-
-        if profile_form.is_valid():
+        # if profile_form.is_valid() and user_form.is_valid():
             # PROFILE CREATE의 경우 USER와 연결이 필요함
             profile = profile_form.save(commit=False)
             profile.user = current_user                 # Profile 모델의 user에 current_user 지정
+            profile.slug = request.POST.get('nickname')
             profile.save()
 
-        return redirect("accounts:profile", slug=request.user.profile.slug)
+            user_form.save()
+
+            return redirect("accounts:profile", slug=request.user.profile.slug)
+
+        except Exception:
+            messages.add_message(request, messages.ERROR, "형식이 올바르지 않습니다.")
+            next = request.POST.get('next', '/')
+            return HttpResponseRedirect(next)
 
 
 class UserLikePhoto(ListView):
@@ -114,5 +122,4 @@ class UserLikePhoto(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['profile_user'] = User.objects.get(id=self.request.user.id)
-        print(context['profile_user'])
         return context
