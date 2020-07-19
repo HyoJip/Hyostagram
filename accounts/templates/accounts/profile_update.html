@@ -32,9 +32,6 @@
                 <li class="input-data"><label for="submit"></label><input type="submit" value="제출" /></li>
             </ul>
             <input type="hidden" name="next" value="{{ request.path }}">
-            <!-- {% if error %}
-                <p class="error_message">{{error}}</p>
-            {% endif %} -->
             {% if messages %}
                 {% for message in messages %}
                     <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{message}}</p>

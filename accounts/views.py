@@ -85,7 +85,7 @@ class ProfileUpdateView(View):
             user_form = UserForm(request.POST, instance=current_user)
 
             # PROFILE UPDATE
-            if hasattr(current_user, "profile"):    
+            if hasattr(current_user, "profile"):
                 profile = current_user.profile
                 profile_form = ProfileForm(
                     request.POST, request.FILES, instance=profile)
@@ -94,7 +94,6 @@ class ProfileUpdateView(View):
             else:
                 profile_form = ProfileForm(request.POST, request.FILES)
 
-        # if profile_form.is_valid() and user_form.is_valid():
             # PROFILE CREATE의 경우 USER와 연결이 필요함
             profile = profile_form.save(commit=False)
             profile.user = current_user                 # Profile 모델의 user에 current_user 지정
