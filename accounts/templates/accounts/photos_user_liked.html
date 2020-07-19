@@ -7,32 +7,7 @@
 
 {% block content %}
 <div class="profile_wrap">
-    <header class="profile">
-    {% if profile_user.profile.profile_photo %}
-        <img class="profile_photo" src="{{profile_user.profile.profile_photo.url}}">
-    {% else %}
-        <img class="profile_photo" src="{% static 'images/person.png' %}">
-    {% endif %}
-        <section class="profile_info">
-            <div class="profile_set">
-            {% if profile_user.profile.nickname %}
-                <h2 class="profile_nickname">{{profile_user.profile.nickname}}</h2>
-            {% endif %}
-
-            <!-- 본인 프로필 페이지면 편집 버튼 생성-->
-            {% if user == profile_user %}
-                    <!-- 버튼에 a태그 넣고 싶으면 js를 쓰면 간단하게 가능 -->
-                    <button onclick="location.href=`{% url 'accounts:profile_update' %}`" class="profile_btn" type="button">프로필 편집</button>
-            {% endif %}
-            </div>
-            <div class="follow"><span class="post">게시물 {{ profile_user.photos.count }}</span><span class="follower">팔로워</span><span class="followee">팔로우</span></div>
-            <h3 class="user_name">
-            {% if profile_user.first_name is not None %}
-                {{profile_user.first_name}}{{profile_user.last_name}}
-            {% endif %}
-            </h3>
-        </section>
-    </header>
+    {% include 'partials/profile_header.html' %}
     <nav class="profile_nav">
         <span class="photo_liked"><i class="fas fa-th"></i>좋아요한 게시물</span>
     <main class="photos">
