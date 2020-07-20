@@ -54,6 +54,7 @@
 	padding: 4px 0;
 	margin: 10px auto;
 	opacity: 0.5;
+	cursor: pointer;
 }
 
 .signup_btn.actived {

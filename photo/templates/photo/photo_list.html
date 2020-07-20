@@ -47,8 +47,8 @@
                         <div class="likes_wrap">
                             <img src="{% static 'images/person.png' %}" alt="person_photo" class="likes_img">
                             <h5 class="likes_count">
-                                {% if photo.total_likes %}<span class="user_nickname">{{photo.like.last.profile.nickname}} </span>
-                                <span class="count">외 {% endif %}<span class="total_likes">{{ photo.total_likes }}</span>명</span>이 좋아합니다
+                                {% if photo.total_likes %}<span class="user_nickname">{{photo.like.last.profile.nickname}} 외</span>
+                                <span class="count"> {% endif %}<span class="total_likes">{{ photo.total_likes }}</span>명</span>이 좋아합니다
                             </h5>
                         </div>
                         <h4 class="photo_content"><span class="user_nickname">{{ photo.user.profile.nickname }} </span>  {{ photo.content }}</h4>
@@ -83,19 +83,6 @@
     <script>
         const focusToCommentForm = (event) => {
             event.target.closest(".comment_wrap").querySelector(".comment_input").focus();
-        }
-
-        const parseCookies = ()=> {
-            const cookies = {};
-            if (document.cookie && document.cookie !== '') {
-                document.cookie.split(';').forEach(function (c) {
-                    const m = c.trim().match(/(\w+)=(.*)/);
-                    if(m !== undefined) {
-                        cookies[m[1]] = decodeURIComponent(m[2]);
-                    }
-                });
-            }
-            return cookies;
         }
 
         const pageAjax = () => {
@@ -221,7 +208,11 @@
                 if (res.status === 200) {
                     res.json().then(data => {
                         if (data.like_count === 1 && data.is_created)
-                            event.target.closest(".comment_wrap").querySelector(".total_likes").textContent = data.nickname+" 1";
+                            event.target.closest(".comment_wrap").querySelector(".total_likes").textContent = data.nickname+" 외 1";
+                        else if (data.like_count === 0) {
+                            event.target.closest(".comment_wrap").querySelector(".user_nickname").textContent = "";
+                            event.target.closest(".comment_wrap").querySelector(".total_likes").textContent = data.like_count;
+                        }
                         else
                             event.target.closest(".comment_wrap").querySelector(".total_likes").textContent = data.like_count;
 

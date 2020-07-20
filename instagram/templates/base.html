@@ -36,6 +36,20 @@
     {% block content %}
     {% endblock %}
 
+    <script>
+        const parseCookies = ()=> {
+            const cookies = {};
+            if (document.cookie && document.cookie !== '') {
+                document.cookie.split(';').forEach(function (c) {
+                    const m = c.trim().match(/(\w+)=(.*)/);
+                    if(m !== undefined) {
+                        cookies[m[1]] = decodeURIComponent(m[2]);
+                    }
+                });
+            }
+            return cookies;
+        }
+    </script>
     {% block js %}
     {% endblock %}
 </body>

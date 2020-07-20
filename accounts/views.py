@@ -1,4 +1,6 @@
-from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect
+import json
+
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponseRedirect, HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import TemplateView, CreateView, DetailView, ListView
 from django.contrib.auth.models import User
@@ -6,7 +8,7 @@ from django.views import View
 from django.contrib import messages
 
 from .forms import CreateUserForm, UserForm, ProfileForm
-from .models import Profile
+from .models import Profile, Following
 from photo.models import Photo
 
 
@@ -56,6 +58,23 @@ class ProfileView(DetailView):
         d_obj = User.objects.get(profile=p_obj)
 
         return d_obj
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfileView, self).get_context_data(**kwargs)
+        profile_user = self.get_object()
+
+        context["connection"] = Following.objects.filter(
+            user=self.request.user, friends=profile_user)
+        try:
+            followee = Following.objects.filter(
+                user=profile_user).first().friends.count()
+        except:
+            followee = Following.objects.filter(user=profile_user).count()
+        finally:
+            context["followee"] = followee
+        context["follower"] = Following.objects.filter(
+            friends=profile_user).count()
+        return context
 
 
 class ProfileUpdateView(View):
@@ -120,5 +139,43 @@ class UserLikePhoto(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['profile_user'] = User.objects.get(id=self.request.user.id)
+        profile_user = User.objects.get(id=self.request.user.id)
+        context['profile_user'] = profile_user
+
+        try:
+            followee = Following.objects.filter(
+                user=profile_user).first().friends.count()
+        except:
+            followee = Following.objects.filter(user=profile_user).count()
+        finally:
+            context["followee"] = followee
+        context["follower"] = Following.objects.filter(
+            friends=profile_user).count()
         return context
+
+
+def follow(request, slug):
+    current_user = request.user
+    target = get_object_or_404(User, profile__slug=slug)
+
+    following = Following.objects.filter(user=current_user, friends=target)
+    is_following = True if following else False
+
+    follower = Following.objects.filter(friends=target).count()
+
+    # 이미 팔로우가 되어 있는 상태면 언팔로우하고 대상 팔로워 -1
+    if is_following:
+        Following.unfollow(current_user, target)
+        is_following = False
+        follower -= 1
+
+    # 팔로우하고 대상 팔로워 +1
+    else:
+        Following.follow(current_user, target)
+        is_following = True
+        follower += 1
+
+    context = {'is_following': is_following,
+               'follower': follower}
+
+    return HttpResponse(json.dumps(context), content_type="application/json")

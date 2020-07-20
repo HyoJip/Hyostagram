@@ -13,11 +13,13 @@
 
         <!-- 본인 프로필 페이지면 편집 버튼 생성-->
         {% if user == profile_user %}
-                <!-- 버튼에 a태그 넣고 싶으면 js를 쓰면 간단하게 가능 -->
-                <button onclick="location.href=`{% url 'accounts:profile_update' %}`" class="profile_btn" type="button">프로필 편집</button>
+            <!-- 버튼에 a태그 넣고 싶으면 js를 쓰면 간단하게 가능 -->
+            <button onclick="location.href=`{% url 'accounts:profile_update' %}`" class="profile_btn" type="button">프로필 편집</button>
+        {% else %}
+            <a href="{% url 'accounts:user_follow' profile_user.profile.slug %}" class="profile_btn" role="button" id="follow_btn">{% if connection %}언팔로우{% else %}팔로우{% endif %}</a>
         {% endif %}
         </div>
-        <div class="follow"><span class="post">게시물 {{ profile_user.photos.count }}</span><span class="follower">팔로워</span><span class="followee">팔로우</span></div>
+        <div class="follow"><span class="post">게시물 {{ profile_user.photos.count }}</span><span class="follower">팔로워 <span class="follower_count">{{ follower }}</span></span><span class="followee">팔로우 {{ followee }}</span></div>
         <h3 class="user_name">
         {% if profile_user.first_name is not None %}
             {{profile_user.first_name}}{{profile_user.last_name}}
@@ -25,3 +27,38 @@
         </h3>
     </section>
 </header>
+
+{% block js %}
+<script>
+    if(document.getElementById("follow_btn")) {
+        document.getElementById("follow_btn").addEventListener("click", (event) => {
+            event.preventDefault();
+            const cookies = parseCookies();
+            const url = event.target.href;
+            const headers =  { "Content-Type": "application/x-www-form-urlencoded",
+                                "X-CSRFToken": cookies["csrftoken"],
+                                "X-Requested-With": "XMLHttpRequest"};
+            
+            fetch(url, {
+                method: "POST",
+                headers, }).then(res => {
+                if (res.status === 200) {
+                    res.json().then(data => {
+                        let count = document.querySelector(".follower_count").textContent;
+
+                        if (data.is_following) {
+                            event.target.textContent = "언팔로우";
+                            count = parseInt(count) + 1;
+                        } else {
+                            event.target.textContent = "팔로우";
+                            count = parseInt(count) - 1;
+                        }
+                        document.querySelector(".follower_count").textContent = count;
+                    })
+                }
+            });
+        })
+    }
+
+</script>
+{% endblock %}
