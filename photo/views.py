@@ -23,9 +23,27 @@ class PhotoList(LoginRequiredMixin, FormMixin, ListView):
     form_class = CommentForm
 
     def get_queryset(self, **kwargs):
+        followed_user = [i for i in self.request.user.following.friends.all()]
+        followed_user.append(self.request.user)
+        queryset = Photo.objects.filter(user__in=followed_user).prefetch_related(
+            'comments__user').select_related('user').prefetch_related('like').order_by('-created_at')
+        return queryset
+
+    def get_context_data(self, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        context['current_user'] = self.request.user
+        return context
+
+
+class PhotoAllList(LoginRequiredMixin, FormMixin, ListView):
+    model = Photo
+    paginate_by = 2
+    form_class = CommentForm
+
+    def get_queryset(self, **kwargs):
         queryset = super().get_queryset(**kwargs).prefetch_related(
             'comments__user').select_related('user').prefetch_related('like').order_by('-created_at')
-        # .annotate(more_count=Count('comments') -1)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -50,18 +68,6 @@ class PhotoCreate(LoginRequiredMixin, CreateView):
     template_name = "photo/photo_form.html"
 
     def form_valid(self, form):
-
-        # def save(self, commit=True):
-        #     self.instance = Post(**self.cleaned_data)   # is_vaild() 함수가 수행되고 나면 데이터는 cleaned_data 변수에 사전형객체로 제공됨
-        #     if commit:
-        #         self.instance.save()
-        #     return self.instance
-
-        # def form_valid(self, form):
-        # """If the form is valid, save the associated model."""
-        # self.object = form.save()
-        # """If the form is valid, redirect to the supplied URL."""
-        # return HttpResponseRedirect(self.get_success_url())
         form.instance.user = self.request.user
         return super().form_valid(form)
 

@@ -13,13 +13,6 @@
 {% endblock %}
 
 {% block content %}
-    <!-- 로그인 상태 -->
-    {% if user.is_active %}
-    <h2> Welcome, {{user.username}} </h2>
-    <a href="{% url 'accounts:logout' %}">로그아웃</a>
-
-    <!-- 로그아웃 상태 -->
-    {% else %}
     <content class="content_wrap">
         <h1 class="content_title">Instagram</h1>
         <form method="post" class="login_form">
@@ -63,8 +56,6 @@
         <p class="signup_comment">계정이 없으신가요?
         <a href="{% url 'accounts:signup' %}" class="signup_comment_link">가입하기</a></p>
     </content>
-
-    {% endif %}
 
 {% endblock %}
 

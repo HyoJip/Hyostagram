@@ -15,6 +15,10 @@
         {% if user == profile_user %}
             <!-- 버튼에 a태그 넣고 싶으면 js를 쓰면 간단하게 가능 -->
             <button onclick="location.href=`{% url 'accounts:profile_update' %}`" class="profile_btn" type="button">프로필 편집</button>
+            <form action="{% url 'accounts:logout' %}" method="POST">
+                {% csrf_token %}
+                <button onclick="confirm('로그아웃 하시겠습니까?')" class="profile_btn" type="submit">로그아웃</button>
+            </form>
         {% else %}
             <a href="{% url 'accounts:user_follow' profile_user.profile.slug %}" class="profile_btn" role="button" id="follow_btn">{% if connection %}언팔로우{% else %}팔로우{% endif %}</a>
         {% endif %}

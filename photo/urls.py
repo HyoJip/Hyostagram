@@ -7,6 +7,7 @@ app_name = "photo"
 urlpatterns = [
     # Photo
     path("", login_required(views.PhotoList.as_view()), name="list"),
+    path("all/", login_required(views.PhotoAllList.as_view()), name="all_list"),
     path("create/", views.PhotoCreate.as_view(), name="create"),
     path("detail/<int:pk>/", views.PhotoDetail.as_view(), name="detail"),
     path("update/<int:pk>/", views.PhotoUpdate.as_view(), name="update"),

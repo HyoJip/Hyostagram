@@ -23,8 +23,7 @@
             </div>
             <div class="nav_icons">
                 <a href="{% url 'photo:list' %}"><i class="fas fa-home"></i></a>
-                <i class="fas fa-location-arrow"></i>
-                <i class="far fa-compass"></i>
+                <a href="{% url 'photo:all_list' %}"><i class="far fa-compass"></i></a>
                 <a href="{% url 'accounts:user_like_photo' user.profile.slug %}"><i class="far fa-heart"></i></a>
                 {% if user.profile.slug %}
                 <a href="{% url 'accounts:profile' user.profile.slug %}"><img src="{{user.profile.profile_photo.url}}" alt="user_profile_image"></a>

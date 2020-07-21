@@ -147,6 +147,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # Account Settings
 # 로그인 VIEW를 따로 쓰지 않았기 때문에 셋팅에서 로그인 리다이렉트 오버라이딩
 LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of 'allauth'
