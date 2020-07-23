@@ -68,13 +68,32 @@
                         </div>
                     </section>
                 </article>
-                {% endfor %}
-                {% if page_obj.has_next %}
-                    <a class="next_page" href="?page={{ page_obj.next_page_number }}" style="display: none;">More</a>
-                {% endif %}
-            </main>
-            <aside class="aside">
-
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <a class="next_page" href="?page={{ page_obj.next_page_number }}" style="display: none;">More</a>
+            {% endif %}
+        </main>
+        <aside class="aside">
+            <div class="aside_wrap">
+                <header>
+                    <a href="{% url 'accounts:profile' user.profile.slug %}">
+                        <img src="{{ user.profile.profile_photo.url }}" alt="user_photo" class="user_img">
+                    </a>
+                    <hgroup class="user_info">
+                        <h3 class="user_nickname"><a href="{% url 'accounts:profile' user.profile.slug %}">{{ user.profile.nickname }}</a></h3>
+                        <h4 class="user_name">{{user.first_name}}{{user.last_name}}</h4>
+                    </hgroup>
+                </header>
+                <main class="aside_context">
+                    <h3>소중한 순간을 포착하여 공유해보세요.</h3>
+                    <h4>첫 사진을 친구들에게 공유해보세요.</h4>
+                    <a href="{% url 'photo:create' %}" class="photo_upload_btn" role="button">사진 업로드</a>
+                </main>
+                <footer>
+                    <p>© 2020 INSTAGRAM CLONE FROM FACEBOOK</p>
+                    <p>MADE BY H_HOUSE</p>
+                </footer>
+            </div>
         </aside>
     </section>
 {% endblock %}

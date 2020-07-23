@@ -10,7 +10,6 @@
     {% include 'partials/profile_header.html' %}
     <nav class="profile_nav">
         <span class="upload actived"><i class="fas fa-th"></i>게시물</span>
-        <span class="taged"><i class="fas fa-user-tag"></i>태그됨</span></nav>
     <main class="photos">
     {% for object in profile_user.photos.all %}
         <a href="{% url 'photo:detail' object.id %}"><img class="photo" src="{{object.filtered_image.url}}" alt="user_photo"></a>

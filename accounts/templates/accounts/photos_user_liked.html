@@ -12,7 +12,7 @@
         <span class="photo_liked"><i class="fas fa-th"></i>좋아요한 게시물</span>
     <main class="photos">
     {% for photo in object_list %}
-        <a href="{% url 'photo:detail' photo.id %}"><img src="{{photo.image.url}}" class="photo" alt="photo_user_liked"></a>
+        <a href="{% url 'photo:detail' photo.id %}"><img src="{{photo.filtered_image.url}}" class="photo" alt="photo_user_liked"></a>
     {% endfor %}
     </main>
 {% endblock %}
