@@ -22,4 +22,5 @@ urlpatterns = [
 
     path("profile/<slug:slug>/photo_like/",
          views.UserLikePhoto.as_view(), name="user_like_photo"),
+    path("search/", views.SearchUser.as_view(), name="search_result"),
 ]

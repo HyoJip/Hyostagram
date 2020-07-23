@@ -19,7 +19,11 @@
             <a href="{% url 'photo:list' %}"><img src="{% static 'images/logo.png'%}" alt="logo"></a>
             <div class="input_wrap">
                 <i class="fas fa-search"></i>
-                <input type="search" class="nav_input" placeholder="검색">
+                <div class="search_form">
+                    <input type="search" name="keyword" class="nav_input" placeholder="검색">
+                    <div class="search_result">
+                    </div>
+                </div>
             </div>
             <div class="nav_icons">
                 <a href="{% url 'photo:list' %}"><i class="fas fa-home"></i></a>
@@ -48,6 +52,31 @@
             }
             return cookies;
         }
+
+        const searchUser = (event) => {
+            event.preventDefault();
+            const value = event.target.value;   
+            if (value == "" || value == null) return        
+            const url = "{% url 'accounts:search_result' %}?keyword=" + value;
+            const headers =  { "Content-Type": "application/x-www-form-urlencoded",
+                                    "X-Requested-With": "XMLHttpRequest"};
+
+            fetch(url, {
+                method: "GET",
+                headers, }).then(res => {
+                if (res.status === 200) {
+                    res.text().then(data => {
+                        document.querySelector(".search_result").innerHTML = data;
+                    })
+                }
+            });
+        }
+        // 유저 검색 결과 DB에서 AJAX로 가져오기
+        document.querySelector(".nav_input").addEventListener("input", searchUser);
+
+        // 서치폼 CSS 토글
+        document.querySelector(".nav_input").addEventListener("focus", () => document.querySelector(".search_result").style.visibility = "visible");
+        document.querySelector(".nav_input").addEventListener("blur", () => {setTimeout(()=>document.querySelector(".search_result").style.visibility = "hidden", 100)});
     </script>
     {% block js %}
     {% endblock %}

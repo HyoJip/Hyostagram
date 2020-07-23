@@ -1,0 +1,9 @@
+{% for object in object_list %}
+    <div onclick="location.href=`{% url 'accounts:profile' object.profile.slug %}`">
+        <img src="{{object.profile.profile_photo.url}}" alt="user_profile_image">
+        <hgroup>
+            <h5>{{object.profile.slug}}</h5>
+            <h6>{{object.first_name}}{{object.last_name}}</h6>
+        </hgroup>
+    </div>
+{% endfor %}

@@ -6,6 +6,7 @@ from django.views.generic import TemplateView, CreateView, DetailView, ListView
 from django.contrib.auth.models import User
 from django.views import View
 from django.contrib import messages
+from django.core import serializers
 
 from .forms import CreateUserForm, UserForm, ProfileForm
 from .models import Profile, Following
@@ -179,3 +180,21 @@ def follow(request, slug):
                'follower': follower}
 
     return HttpResponse(json.dumps(context), content_type="application/json")
+
+
+class SearchUser(ListView):
+    model = User
+    template_name = 'partials/search_result.html'
+
+    def get_queryset(self, **kwargs):
+        keyword = self.request.GET.get('keyword')
+        queryset = User.objects.filter(profile__slug__icontains=keyword)
+        return queryset
+
+
+# def searchUser(request):
+#     keyword = request.GET.get("keyword")
+#     user_set = User.objects.filter(
+#         profile__slug__icontains=keyword).select_related('profile')
+
+#     return HttpResponse(serializers.serialize('json', user_set), content_type="application/json")
