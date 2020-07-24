@@ -1,0 +1,266 @@
+.user_nickname > a {
+	text-decoration: none;
+	color: inherit;
+	font-weight: bold;
+}
+
+.body_wrap {
+	display: grid;
+	grid-template-columns: 600px 1fr;
+	min-width: 500px;
+	max-width: 1000px;
+	padding: 10px;
+	margin: 0px auto;
+	gap: 50px;
+}
+
+.body_wrap .photos {
+	display: grid;
+	/* grid-auto-rows: 800px; */
+	gap: 50px;
+	margin: 30px 0;
+}
+
+.photos .photos_photo {
+	border: 1px solid var(--border_color);
+	background-color: white;
+	max-width: 600px;
+	word-wrap: break-word;
+}
+
+.photos_photo .user_info {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 60px;
+	padding: 0 15px;
+}
+
+.user_info .user_img {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+}
+
+.user_info .info_more {
+	position: relative;
+	font-size: 0.7em;
+	text-align: center;
+	color: rgba(0, 0, 0, 0.5);
+}
+
+.photos_photo .photo_info {
+	margin-left: 10px;
+	margin-right: auto;
+	font-size: 0.7em;
+}
+
+.info_more .fa-ellipsis-h {
+	cursor: pointer;
+}
+
+.info_more > li > ul {
+	position: absolute;
+	left: -30px;
+	width: max-content;
+	opacity: 0;
+	visibility: hidden;
+	border: 1px solid var(--border_color);
+	transition: all 0.15s ease-in;
+}
+
+.info_more > li:hover > ul {
+	opacity: 1;
+	visibility: visible;
+}
+
+.info_more > li > ul > li {
+	padding: 10px;
+	background-color: white;
+}
+
+.info_more a,
+.delete-instagram {
+	all: unset;
+}
+
+.info_more > li > ul > li:hover {
+	color: black;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.photos_photo .photo_img {
+	width: 600px;
+	height: 600px;
+	object-fit: cover;
+}
+
+.photos_photo .comment_wrap {
+	padding: 15px;
+}
+
+.comment_wrap .comment_icons {
+	position: relative;
+	display: flex;
+	margin-top: -30px;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 1.5em;
+}
+
+.comment_icons i {
+	cursor: pointer;
+	z-index: 0;
+	margin-right: 5px;
+}
+
+.fa-heart.fas {
+	color: red;
+}
+
+.photo_pagination {
+	position: relative;
+	text-align: center;
+}
+
+.photo_pagination .page {
+	display: inline-block;
+	color: rgba(0, 0, 0, 0.5);
+	font-size: 0.3em;
+	align-self: flex-start;
+	margin-top: 8px;
+}
+
+.photos_photo .likes_wrap {
+	display: flex;
+	align-items: center;
+	margin: 10px 0 5px 0;
+}
+
+.likes_wrap .likes_img {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	margin-right: 5px;
+}
+
+.likes_wrap .likes_count {
+	font-size: 0.8em;
+}
+
+.likes_count .count {
+	font-weight: 700;
+}
+
+.photo_content {
+	font-size: 0.8em;
+	line-height: 18px;
+}
+
+.comment {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.8em;
+	margin: 4px 0;
+	word-break: break-all;
+}
+
+.comment_add p {
+	border-top: 1px solid var(--border_color);
+	padding: 15px 0;
+	margin-top: 15px;
+}
+
+.comment_wrap .comment_count {
+	display: inline-block;
+	text-decoration: none;
+	color: rgba(0, 0, 0, 0.6);
+	font-size: 0.7em;
+	margin: 5px 0;
+}
+
+.timezone {
+	font-size: 0.6em;
+	color: rgba(0, 0, 0, 0.5);
+}
+
+.comment_input {
+	all: unset;
+	color: #262626;
+	height: 20px;
+	width: 100%;
+}
+
+.comment_form input[type="submit"] {
+	display: none;
+}
+
+.comment_box i {
+	cursor: pointer;
+}
+
+.photo_content .user_nickname,
+.comment_text .user_nickname {
+	font-weight: bold;
+}
+
+.asdie {
+	position: relative;
+}
+
+.aside .aside_wrap {
+	position: fixed;
+	top: 100px;
+}
+
+.aside_wrap header {
+	display: flex;
+}
+
+.aside_wrap .user_info {
+	font-size: 1.25rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.aside_wrap .user_info .user_name {
+	color: rgba(0, 0, 0, 0.5);
+}
+
+.aside_wrap .user_img {
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	margin-right: 20px;
+}
+
+.aside_wrap .aside_context {
+	text-align: center;
+	margin: 100px 0;
+}
+
+.aside_context h3 {
+	font-weight: bold;
+	font-size: 1.125rem;
+	margin: 15px 0;
+}
+
+.aside_context .photo_upload_btn {
+	all: unset;
+	display: inline-block;
+	padding: 7px 15px;
+	background-color: black;
+	color: white;
+	font-size: 1.15rem;
+	font-weight: bold;
+	cursor: pointer;
+	border-radius: 5px;
+	margin: 15px 0;
+}
+
+.aside_wrap footer {
+	font-size: 0.85rem;
+	color: rgba(0, 0, 0, 0.5);
+}

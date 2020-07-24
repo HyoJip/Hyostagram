@@ -1,0 +1,166 @@
+.article_wrap {
+	min-width: 600px;
+	max-width: 1000px;
+	display: grid;
+	grid-template-columns: 40vw 1fr;
+	grid-template-rows: 40vw;
+	border: 1px solid var(--border_color);
+	margin: 30px auto;
+}
+
+.article_wrap .article_photo {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.article_wrap .article_info {
+	background-color: white;
+	padding: 0 15px;
+	position: relative;
+	word-break: break-all;
+}
+
+.user_info {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	height: 60px;
+	border-bottom: 2px solid var(--gray);
+}
+
+.user_info a {
+	color: inherit;
+	text-decoration: none;
+	margin-right: auto;
+	display: flex;
+	align-items: center;
+}
+
+.user_img {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	margin-right: 8px;
+	cursor: pointer;
+}
+
+.user_info .info_more {
+	position: relative;
+	font-size: 0.7em;
+	text-align: center;
+	color: rgba(0, 0, 0, 0.5);
+}
+
+.info_more .fa-ellipsis-h {
+	cursor: pointer;
+}
+
+.info_more > li > ul {
+	position: absolute;
+	left: -30px;
+	width: max-content;
+	opacity: 0;
+	visibility: hidden;
+	border: 1px solid var(--border_color);
+	transition: all 0.15s ease-in;
+}
+
+.info_more > li:hover > ul {
+	opacity: 1;
+	visibility: visible;
+}
+
+.info_more > li > ul > li {
+	padding: 10px;
+	background-color: white;
+}
+
+.info_more a,
+.delete-instagram {
+	all: unset;
+}
+
+.info_more > li > ul > li:hover {
+	color: black;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.photo_content {
+	display: flex;
+	align-items: center;
+	width: calc(100% - 20px);
+}
+
+.photo_comments {
+	overflow: scroll;
+	height: calc(100% - 210px);
+	-ms-overflow-style: none;
+}
+
+.photo_comments::-webkit-scrollbar {
+	display: none;
+}
+
+.comment_item {
+	display: flex;
+	margin: 10px 0;
+}
+
+.comment_item .like_box {
+	margin-left: auto;
+	padding-left: 10px;
+}
+
+.comment_box {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.timezone,
+.comment_date {
+	font-size: 0.8em;
+	color: rgba(0, 0, 0, 0.5);
+	margin-top: 5px;
+}
+
+.user_nickname {
+	font-weight: 600;
+	margin-right: 10px;
+	white-space: nowrap;
+}
+
+.comment_icons {
+	padding-top: 10px;
+	border-top: 1px solid var(--border_color);
+	font-size: 1.5em;
+}
+
+.comment_count {
+	font-weight: bold;
+	margin: 7px 0;
+}
+
+.comment_add p {
+	border-top: 1px solid var(--border_color);
+	padding: 15px 0;
+	margin-top: 15px;
+}
+
+.comment_input {
+	all: unset;
+	color: #262626;
+	height: 20px;
+	width: 100%;
+}
+
+.comment_form input[type="submit"] {
+	display: none;
+}
+
+.fa-heart.fas {
+	color: red;
+}
