@@ -1,12 +1,43 @@
-{% extends "base.html" %} 
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/photo_form.css' %}">
+{% endblock %}
 
 {% block content %}
 
-<form action="" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="hidden" name="next" value="" />
-    {{form.as_p}}
-    <button type="submit">업로드</button>
-</form>
+<div class="form_wrap">
+    <form action="" method="post" enctype="multipart/form-data" class="photo_form">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="" />
+        <img alt="your image" class="photo_preview" src="http://www.washaweb.com/tutoriaux/fileupload/imgs/image-temp-220.png">
+        <span class="input_file">
+            <label>컴퓨터에 있는 사진을 업로드해주세요.</label>
+            {% render_field form.image class="form_image" onchange="readURL(this);" %}
+        </span>
+        {% render_field form.content class="form_content" rows=2 %}
+        <button type="submit" class="form_button">업로드</button>
+    </form>
+</div>
 
+{% endblock %}
+
+{% block js %}
+    <script>
+        const readURL = (input) => {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = (event) => {
+                    document.querySelector(".photo_preview").setAttribute("src", event.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+
+                const value = input.value
+                var labelText = 'File : ' + value.substr(12, value.length);
+                input.parentNode.querySelector("label").innerText= labelText;
+            }
+        }
+    </script>
 {% endblock %}
