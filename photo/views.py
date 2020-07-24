@@ -23,11 +23,15 @@ class PhotoList(LoginRequiredMixin, FormMixin, ListView):
     form_class = CommentForm
 
     def get_queryset(self, **kwargs):
-        followed_user = [i for i in self.request.user.following.friends.all()]
-        followed_user.append(self.request.user)
-        queryset = Photo.objects.filter(user__in=followed_user).prefetch_related(
-            'comments__user').select_related('user').prefetch_related('like').order_by('-created_at')
-        return queryset
+        try:
+            followed_user = [
+                i for i in self.request.user.following.friends.all()]
+            followed_user.append(self.request.user)
+            queryset = Photo.objects.filter(user__in=followed_user).prefetch_related(
+                'comments__user').select_related('user').prefetch_related('like').order_by('-created_at')
+            return queryset
+        except Exception:
+            return super(PhotoList, self).get_queryset(**kwargs)
 
     def get_context_data(self, **kwargs):
 
