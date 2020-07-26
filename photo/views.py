@@ -117,7 +117,8 @@ class CommentCreateAjaxView(LoginRequiredMixin, CreateView):
 
         context = {
             "comments": Comment.objects.select_related("user").filter(photo=comment.photo).order_by("created_at"),
-            "pk": Photo.objects.filter(id=comment.photo.id)[0].id
+            "pk": Photo.objects.filter(id=comment.photo.id)[0].id,
+            "likeClass": "far"
         }   # 템플릿에서 쓰려면 {{}}안에 key 써야함
         # ex) "/detail/{{pk}}" --> "/detail/16"  즉, 중괄호 사라짐
 
