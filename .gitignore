@@ -21,9 +21,6 @@ media
 *.py[cod]
 *$py.class
 
-# C extensions
-*.so
-
 # Distribution / packaging
 .Python
 build/
@@ -120,3 +117,5 @@ dmypy.json
 .pyre/
 
 # End of https://www.gitignore.io/api/django
+
+.env

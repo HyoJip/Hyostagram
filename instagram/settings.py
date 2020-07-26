@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import dj_database_url
 import os
+from decouple import config, Csv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,11 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = '(m5b6(=wo8ex6rrdhc%ac2%l5e14$%y5&bo5nlj(xe+2==(tbt'
-SECRET_KEY = os.environ.get(
-    'DJANGO_SECRET_KEY', 'cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag')
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
+DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = ['stark-ridge-05336.herokuapp.com', 'localhost', '127.0.0.1']
 
@@ -54,6 +54,8 @@ INSTALLED_APPS = [
 
     # providers
     'allauth.socialaccount.providers.facebook',
+    # s3 업로드를 위해 storages를 apps 에 추가!
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -137,7 +139,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
@@ -145,7 +147,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
 # Account Settings
@@ -191,3 +193,28 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Heroku: Update database configuration from $DATABASE_URL.
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
+
+
+# S3 설정을 위한 변수
+# AWS_xxx 의 변수들은 aws-S3, boto3 모듈을 위한 변수들이다.
+
+# 엑세스 키와 시크릿 키는 다른 파일로 작성, 임포트하여 사용
+AWS_ACCESS_KEY_ID = 'AKIA3QVFCWNJ6YEN7HU6'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'hyostagram'
+AWS_REGION = 'ap-northeast-2'
+
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com' % (
+    AWS_STORAGE_BUCKET_NAME, AWS_REGION)
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_DEFAULT_ACL = 'public-read'
+AWS_LOCATION = 'static'
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+
+# 스태틱 파일을 위한 스토리지 설정
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# 미디어 파일을 위한 스토리지 설정
+DEFAULT_FILE_STORAGE = 'instagram.storage_backends.MediaStorage'
