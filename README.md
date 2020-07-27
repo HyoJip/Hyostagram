@@ -4,28 +4,17 @@
 [효스타그램](https://stark-ridge-05336.herokuapp.com "효스타그램으로 이동")
 * * *
 ### 구현한 기능
-- 좋아요한 게시물만 DB로부터 가져와 렌더링
-- 팔로우한 유저의 게시물만 DB로부터 가져와 렌더링
-- 좋아요, 댓글, 팔로우 AJAX로 구현
-- 무한스크롤 기능 구현
-- 회원가입에 facebook API 활용
-- 로그인한 유저만 페이지를 볼 수 있도록 권한 설정
-
-### 배운점
-- 무한 스크롤 기능 구현
-  + 페이지네이션 포토를 2개씩 해서 2개씩 로드
-  + 공부를 위해 만들어진 API가 아닌 바닐라JS로 구현
-- AJAX로 페이지 일부만 리렌더링
-  + 좋아요, 팔로우, 댓글 기능을 AJAX를 활용해 변경된 내용만 리로딩
-- DJANGO의 빌트인된 여러 클래스, 메소드를 좀 더 공부하고 이해했음
-- 하나의 페이지에 복수의 폼을 넣는 방법
-  + 하나의 회원가입창에서 Profile 모델과 User 모델 폼을 같이 넣음
-- DB 데이터 요청 최적화할 필요성을 배움
-  + select_related, prefetch_related
-- 프로젝트를 하기 전 설계를 할 필요성 느낌
-  + 진행하면서 통일성 없이 개발되는 것, 모델을 한번 만들면 바꾸기 힘들다는 점을 느낌
-  + 체계적인 규칙, 큰 청사진을 설계할 필요를 느낌
-- 희미했던 DjangoRestAPI와 Django의 차이점을 약간이나마 이해함
-  + 프론트와 백엔드를 구분하기 위해서는 API JSON으로 데이터만 가져올 필요성을 느낌
-- CSS FlexBox에 대해 더 깊이 이해함
-  + flex-basis의 활용
+#### AJAX렌더링(좋아요, 댓글, 검색)
+<img width="800" src="forReadMe/comment.JPG" />
+<img width="800" src="forReadMe/search.JPG" />
+<hr>
+#### 무한스크롤(바닐라JS)
+<img width="800" src="forReadMe/infinite1.JPG" />
+<img width="800" src="forReadMe/infinite2.png" />
+<hr>
+#### 팔로우한 유저 사진만 렌더링(바닐라JS)
+<img width="800" src="forReadMe/follow.JPG" />
+<hr>
+#### 회원가입에 facebook API 활용
+#### 로그인한 유저만 페이지를 볼 수 있도록 권한 설정
+#### Heroku배포, AWS S3 이용
