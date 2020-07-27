@@ -9,7 +9,7 @@ class Profile(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     nickname = models.CharField(max_length=20)
     profile_photo = models.ImageField(
-        upload_to="profile", default="../static/images/person.png")
+        upload_to="profile", default="images/person.png")
     slug = models.SlugField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
