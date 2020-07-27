@@ -199,8 +199,8 @@ DATABASES['default'].update(db_from_env)
 # AWS_xxx 의 변수들은 aws-S3, boto3 모듈을 위한 변수들이다.
 
 # 엑세스 키와 시크릿 키는 다른 파일로 작성, 임포트하여 사용
-AWS_ACCESS_KEY_ID = config('AKIA3QVFCWNJ6YEN7HU6')
-AWS_SECRET_ACCESS_KEY = config('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')
+AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = 'hyostagram'
 AWS_REGION = 'ap-northeast-2'
 
