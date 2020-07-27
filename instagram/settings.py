@@ -139,14 +139,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "instagram", "static"),
+    os.path.join(BASE_DIR, "staticfiles"),
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-MEDIA_URL = '/media/'
+# MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
@@ -199,8 +199,8 @@ DATABASES['default'].update(db_from_env)
 # AWS_xxx 의 변수들은 aws-S3, boto3 모듈을 위한 변수들이다.
 
 # 엑세스 키와 시크릿 키는 다른 파일로 작성, 임포트하여 사용
-AWS_ACCESS_KEY_ID = 'AKIA3QVFCWNJ6YEN7HU6'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = config('AKIA3QVFCWNJ6YEN7HU6')
+AWS_SECRET_ACCESS_KEY = config('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')
 AWS_STORAGE_BUCKET_NAME = 'hyostagram'
 AWS_REGION = 'ap-northeast-2'
 
@@ -210,11 +210,16 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
 AWS_DEFAULT_ACL = 'public-read'
-# AWS_LOCATION = 'static'
-# STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 
-# 스태틱 파일을 위한 스토리지 설정
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# S3 스토리지에 폴더 설정
+AWS_LOCATION = 'staticfiles'
+
+# {% static %} 오버라이드
+# ex ) https://hyostagram.s3.ap-northeast-2.amazonaws.com/static/images/logo.png
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+
+# 스태틱 파일을 위한 스토리지 설정 - collect할 때 여기 location으로 저장 -default는 staticfiles
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # 미디어 파일을 위한 스토리지 설정
 DEFAULT_FILE_STORAGE = 'instagram.storage_backends.MediaStorage'
