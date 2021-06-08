@@ -18,7 +18,7 @@ idna==2.9
 jmespath==0.10.0
 oauthlib==3.1.0
 pilkit==2.0
-Pillow==7.1.1
+Pillow==8.2.0
 psycopg2-binary==2.8.5
 pycodestyle==2.6.0
 python-dateutil==2.8.1
